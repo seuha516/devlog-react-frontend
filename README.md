@@ -18,4 +18,4 @@
   - 프로젝트 및 블로그 리스트 / 읽기 / 쓰기
 
 ## Other
-- [Devlog_BackEnd](https://github.com/seuha516/Devlog_BackEnd)
+- [Devlog_BackEnd](https://github.com/seuha516/devlog-express-backend)
