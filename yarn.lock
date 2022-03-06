@@ -2810,6 +2810,16 @@
   dependencies:
     "tweetnacl" "^0.14.3"
 
+"bfj@^7.0.2":
+  "integrity" "sha512-+e/UqUzwmzJamNF50tBV6tZPTORow7gQ96iFow+8b562OdMpEK0BcJEq2OSPEDmAbSMBQ7PKZ87ubFkgxpYWgw=="
+  "resolved" "https://registry.npmjs.org/bfj/-/bfj-7.0.2.tgz"
+  "version" "7.0.2"
+  dependencies:
+    "bluebird" "^3.5.5"
+    "check-types" "^11.1.1"
+    "hoopy" "^0.1.4"
+    "tryer" "^1.0.1"
+
 "big.js@^5.2.2":
   "integrity" "sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ=="
   "resolved" "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz"
@@ -3266,6 +3276,11 @@
   "integrity" "sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw=="
   "resolved" "https://registry.npmjs.org/char-regex/-/char-regex-1.0.2.tgz"
   "version" "1.0.2"
+
+"check-types@^11.1.1":
+  "integrity" "sha512-tzWzvgePgLORb9/3a0YenggReLKAIb2owL03H2Xdoe5pKcUyWRSEQ8xfCar8t2SIAuEDwtmx2da1YB52YuHQMQ=="
+  "resolved" "https://registry.npmjs.org/check-types/-/check-types-11.1.2.tgz"
+  "version" "11.1.2"
 
 "chokidar@^2.1.8":
   "integrity" "sha512-ZmZUazfOzf0Nve7duiCKD23PFSCs4JPoYyccjUFF3aQkQadqBhfzhjkwBH2mNOG9cTBwhamM37EIsIkZw3nRgg=="
@@ -5828,6 +5843,11 @@
   "version" "3.3.2"
   dependencies:
     "react-is" "^16.7.0"
+
+"hoopy@^0.1.4":
+  "integrity" "sha512-HRcs+2mr52W0K+x8RzcLzuPPmVIKMSv97RGHy0Ea9y/mpcaK+xTrjICA04KAHi4GRzxliNqNJEFYWHghy3rSfQ=="
+  "resolved" "https://registry.npmjs.org/hoopy/-/hoopy-0.1.4.tgz"
+  "version" "0.1.4"
 
 "hosted-git-info@^2.1.4":
   "integrity" "sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw=="
@@ -11680,6 +11700,11 @@
   "version" "1.0.3"
   dependencies:
     "glob" "^7.1.2"
+
+"tryer@^1.0.1":
+  "integrity" "sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA=="
+  "resolved" "https://registry.npmjs.org/tryer/-/tryer-1.0.1.tgz"
+  "version" "1.0.1"
 
 "ts-pnp@^1.1.6":
   "integrity" "sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw=="
