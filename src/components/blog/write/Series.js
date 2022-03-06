@@ -6,8 +6,7 @@ import { BsBook } from 'react-icons/bs';
 import styled from 'styled-components';
 
 import Loading from 'components/utils/Loading';
-import { changeField } from 'modules/blog/writeBlog';
-import { catalogPost } from 'modules/blog/catalogBlog';
+import { changeField, catalogPost } from 'modules/blog/writeBlog';
 
 const FlexRow = styled.div`
   display: flex;
@@ -41,14 +40,12 @@ const Input = styled.input`
 `;
 
 const Series = () => {
-  const { series, project, catalog, loading } = useSelector(
-    ({ writeBlog, catalogBlog, loading }) => ({
-      series: writeBlog.series,
-      project: writeBlog.project,
-      catalog: catalogBlog,
-      loading: loading['catalogBlog/CATALOG_POST'],
-    }),
-  );
+  const { series, project, catalog, loading } = useSelector(({ writeBlog, catalogBlog, loading }) => ({
+    series: writeBlog.series,
+    project: writeBlog.project,
+    catalog: writeBlog.catalog,
+    loading: loading['catalogBlog/CATALOG_POST'],
+  }));
   const dispatch = useDispatch();
   const [newSeries, setNewSeries] = useState(false);
 
@@ -80,10 +77,7 @@ const Series = () => {
         ) : catalog.error ? (
           <FlexRow>
             <div style={{ margin: '10px' }}>Error</div>
-            <AiOutlineReload
-              style={{ cursor: 'pointer' }}
-              onClick={() => dispatch(catalogPost())}
-            />
+            <AiOutlineReload style={{ cursor: 'pointer' }} onClick={() => dispatch(catalogPost())} />
           </FlexRow>
         ) : (
           <>
@@ -103,19 +97,12 @@ const Series = () => {
         ) : catalog.error ? (
           <FlexRow>
             <div style={{ margin: '10px' }}>Error</div>
-            <AiOutlineReload
-              style={{ cursor: 'pointer' }}
-              onClick={() => dispatch(catalogPost())}
-            />
+            <AiOutlineReload style={{ cursor: 'pointer' }} onClick={() => dispatch(catalogPost())} />
           </FlexRow>
         ) : (
           <>
             <BsBook style={{ width: '30px', height: '30px', marginRight: '5px' }} />
-            {newSeries && (
-              <Input
-                onChange={(e) => dispatch(changeField({ key: 'series', value: e.target.value }))}
-              />
-            )}
+            {newSeries && <Input onChange={(e) => dispatch(changeField({ key: 'series', value: e.target.value }))} />}
             <Select defaultValue={series} onChange={onChangeSeries}>
               <option>None</option>
               <option>New Series</option>
