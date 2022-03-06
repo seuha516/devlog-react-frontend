@@ -170,7 +170,7 @@ const AroundNull = styled.div`
 `;
 
 const Read = ({ match, history }) => {
-  const { readBlog, removeBlog, loading, user } = useSelector(({ readBlog, loading, user }) => ({
+  const { readBlog, loading, user } = useSelector(({ readBlog, loading, user }) => ({
     readBlog: readBlog,
     loading: loading['readBlog/READ_POST'] || loading['readBlog/REMOVE_POST'],
     user: user.user,
@@ -268,11 +268,7 @@ const PostTagsBlock = ({ tags }) => {
   return (
     <TagsWrapper>
       {tags.map((tag) => (
-        <Link
-          to={`/blog/list/?tag=${tag.name}`}
-          key={tag._id}
-          style={{ color: tag.color, marginRight: '10px' }}
-        >
+        <Link to={`/blog/list/?tag=${tag.name}`} key={tag._id} style={{ color: tag.color, marginRight: '10px' }}>
           #{tag.name}
         </Link>
       ))}

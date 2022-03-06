@@ -1,12 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { readProject, initReadProject } from 'modules/projects/readProjects';
+import { readProject, initReadProject, removeProject } from 'modules/projects/readProjects';
 import { setOriginalProject } from 'modules/projects/writeProjects';
-import {
-  removeProject,
-  initRemoveProject,
-} from 'modules/projects/removeProjects';
 
 import Header from 'components/project/read/Header';
 import Thumbnail from 'components/project/read/Thumbnail';
@@ -46,76 +42,65 @@ const ReadWrapper = styled(FlexColumn)`
 `;
 
 const Read = ({ match, history }) => {
-  const dispatch = useDispatch();
-  const { project, error, removeProjects, loading, user } = useSelector(
-    ({ readProjects, removeProjects, loading, user }) => ({
-      project: readProjects.project,
-      error: readProjects.error,
-      removeProjects: removeProjects,
-      loading:
-        loading['readProjects/READ_PROJECT'] ||
-        loading['removeProjects/REMOVE_PROJECT'],
-      user: user.user,
-    }),
-  );
+  // const dispatch = useDispatch();
+  // const { readProjects, loading, user } = useSelector(({ readProjects, loading, user }) => ({
+  //   readProjects: readProjects,
+  //   loading: loading['readProjects/READ_PROJECT'] || loading['removeProjects/REMOVE_PROJECT'],
+  //   user: user.user,
+  // }));
 
-  const { id } = match.params;
-  useEffect(() => {
-    dispatch(readProject(id));
-    return () => {
-      dispatch(initReadProject());
-      dispatch(initRemoveProject());
-    };
-  }, [dispatch, id]);
+  // const { id } = match.params;
+  // useEffect(() => {
+  //   dispatch(readProject(id));
+  //   return () => {
+  //     dispatch(initReadProject());
+  //   };
+  // }, [dispatch, id]);
 
-  const onEdit = () => {
-    dispatch(setOriginalProject(project));
-    history.push('/project/write');
-  };
-  const onRemove = () => {
-    if (window.confirm('정말 이 프로젝트를 삭제하시겠습니까?') === true) {
-      dispatch(removeProject(id));
-    }
-  };
-  useEffect(() => {
-    if (removeProjects.error) {
-      alert('프로젝트 삭제에 실패했습니다.');
-    } else if (removeProjects.remove) {
-      history.push('/project/list');
-    }
-  }, [history, removeProjects]);
-  useEffect(() => {
-    const htmlTitle = document.querySelector('title');
-    htmlTitle.innerHTML = project ? `${project.title}` : `Devlog`;
-    return () => {
-      htmlTitle.innerHTML = 'Devlog';
-    };
-  }, [project]);
+  // const onEdit = () => {
+  //   dispatch(setOriginalProject(readProjects.project));
+  //   history.push('/project/write');
+  // };
+  // const onRemove = () => {
+  //   if (window.confirm('정말 이 프로젝트를 삭제하시겠습니까?') === true) {
+  //     dispatch(removeProject(id));
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (readProjects.removeError) {
+  //     alert('프로젝트 삭제에 실패했습니다.');
+  //   } else if (readProjects.remove) {
+  //     history.push('/project/list');
+  //   }
+  // }, [history, readProjects]);
+  // useEffect(() => {
+  //   const htmlTitle = document.querySelector('title');
+  //   htmlTitle.innerHTML = readProjects.project ? `${readProjects.project.title}` : `Devlog`;
+  //   return () => {
+  //     htmlTitle.innerHTML = 'Devlog';
+  //   };
+  // }, [readProjects.project]);
 
-  if (error) {
-    if (error.response && error.response.status === 404) {
-      return <NotFound />;
-    }
-    return <Error />;
-  }
-  if (loading || !project) return <Loading />;
+  // if (readProjects.error) {
+  //   if (readProjects.error.response && readProjects.error.response.status === 404) {
+  //     return <NotFound />;
+  //   }
+  //   return <Error />;
+  // }
+  // if (loading || !readProjects.project) return <Loading />;
   return (
     <Wrapper>
       <Header />
       <ReadWrapper>
-        <Thumbnail thumbnail={project.thumbnail} />
-        <Text
-          title={project.title}
-          subTitle={project.subTitle}
-          body={project.body}
-        />
+        {/* <Thumbnail thumbnail={project.thumbnail} />
+        <Text title={project.title} subTitle={project.subTitle} body={project.body} />
         <ProjectLink title={project.title} link={project.link} />
         {project.images.length > 0 && <Images images={project.images} />}
         {project.update.length > 0 && <Update update={project.update} />}
         <WorkingPeriod workingPeriod={project.workingPeriod} />
         <MoreInfo moreInfo={project.moreInfo} />
         {project.tags.length > 0 && <Tags tags={project.tags} />}
-        {user && <Buttons onEdit={onEdit} onRemove={onRemove} />}
+        {user && <Buttons onEdit={onEdit} onRemove={onRemove} />} */}
       </ReadWrapper>
       <ListButton />
     </Wrapper>

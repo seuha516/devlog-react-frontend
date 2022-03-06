@@ -7,7 +7,7 @@ import TagBox from '../write/TagBox';
 import WriteButtons from '../write/WriteButtons';
 import Series from '../write/Series';
 import { useDispatch } from 'react-redux';
-import { catalogPost } from 'modules/blog/catalogBlog';
+import { catalogPost } from 'modules/blog/listBlog';
 
 const WriteWrapper = styled.div`
   width: 100%;

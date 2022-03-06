@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IoIosPricetags } from 'react-icons/io';
 import { BsPlusCircle } from 'react-icons/bs';
-import { changeField } from 'modules/projects/writeProjects';
-import { catalogProject } from 'modules/projects/catalogProjects';
+import { changeField, catalogProject } from 'modules/projects/writeProjects';
 
 const FlexRow = styled.div`
   display: flex;
@@ -200,11 +199,7 @@ const Tags = () => {
       </SearchWrapper>
       <TagBox>
         {tags.map((tag) => (
-          <Tag
-            key={tag.name}
-            style={{ color: tag.color }}
-            onClick={() => removeTag(tag.name)}
-          >
+          <Tag key={tag.name} style={{ color: tag.color }} onClick={() => removeTag(tag.name)}>
             {`#${tag.name}`}
           </Tag>
         ))}
