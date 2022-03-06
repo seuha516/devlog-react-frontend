@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 import { AiOutlineFileAdd, AiOutlineRollback } from 'react-icons/ai';
-import { updatePost, writePost } from 'modules/blog/writeBlog';
+import styled from 'styled-components';
+
 import Loading from 'components/utils/Loading';
+import { updatePost, writePost } from 'modules/blog/writeBlog';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -44,71 +45,50 @@ const Button = styled.div`
   }
 `;
 
-const WriteButtons = ({ history }) => {
+const WriteButtons = ({ writeBlog, loading, history }) => {
   const dispatch = useDispatch();
-  const post = useSelector((store) => store.writeBlog);
-  const user = useSelector((store) => store.user.user);
-  const [loading, setLoading] = useState(false);
-
   const serialize = (p) => {
-    delete p.originalId;
-    delete p.post;
-    delete p.error;
-    return p;
+    const post = { ...p };
+    delete post.originalId;
+    delete post.post;
+    delete post.error;
+    delete post.catalog;
+    delete post.catalogError;
+    return post;
   };
-
   const onPublish = () => {
-    if (!user) {
-      alert('로그인 중이 아닙니다.');
-      return;
-    }
-    if (post.title === '') {
+    if (writeBlog.title === '') {
       alert('제목을 입력해 주세요.');
       return;
     }
-    if (post.subTitle === '') {
+    if (writeBlog.subTitle === '') {
       alert('부제목을 입력해 주세요.');
       return;
     }
-    if (post.originalId) {
-      dispatch(
-        updatePost({
-          id: post.originalId,
-          post: serialize(post),
-        }),
-      );
+    if (writeBlog.originalId) {
+      dispatch(updatePost({ id: writeBlog.originalId, post: serialize(writeBlog) }));
     } else {
-      dispatch(writePost(serialize(post)));
+      dispatch(writePost(serialize(writeBlog)));
     }
-    setLoading(true);
   };
   const onCancel = () => {
     history.goBack();
   };
 
-  useEffect(() => {
-    if (post.postError) {
-      alert('업로드 중 오류가 발생했습니다.');
-      setLoading(false);
-    } else if (post.post) {
-      history.push(`/blog/read/${post.post._id}`);
-    }
-  }, [history, post.post, post.postError]);
-
-  if (loading)
+  if (loading) {
     return (
-      <div style={{ width: '50px', height: '50px' }}>
+      <div style={{ width: '100%', height: '70px' }}>
         <Loading />
       </div>
     );
+  }
   return (
     <Wrapper>
       <Button hoverColor="#18630f" onClick={onPublish}>
         <AiOutlineFileAdd /> Write
       </Button>
       <Button hoverColor="gray" onClick={onCancel}>
-        <AiOutlineRollback />
-        Cancel
+        <AiOutlineRollback /> Cancel
       </Button>
     </Wrapper>
   );

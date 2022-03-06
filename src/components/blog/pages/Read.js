@@ -1,16 +1,23 @@
-import Error from 'components/utils/Error';
-import Loading from 'components/utils/Loading';
-import NotFound from 'components/utils/NotFound';
-import { readPost, removePost, likePost, initReadPost } from 'modules/blog/readBlog';
-import 'react-quill/dist/quill.snow.css';
-
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { RiBallPenLine } from 'react-icons/ri';
+import { useDispatch, useSelector } from 'react-redux';
 import { BiTrashAlt, BiLike } from 'react-icons/bi';
+import { RiBallPenLine } from 'react-icons/ri';
+import styled from 'styled-components';
+import 'react-quill/dist/quill.snow.css';
 import { setOriginalPost } from 'modules/blog/writeBlog';
+import {
+  initReadPost,
+  readPost,
+  removePost,
+  likePost,
+  writeCommentPost,
+  removeCommentPost,
+} from 'modules/blog/readBlog';
+
+import Error from 'components/utils/Error';
+import NotFound from 'components/utils/NotFound';
+import Loading from 'components/utils/Loading';
 import ListButton from '../read/ListButton';
 import ProjectLink from '../read/ProjectLink';
 import SeriesLink from '../read/SeriesLink';
@@ -170,29 +177,30 @@ const AroundNull = styled.div`
 `;
 
 const Read = ({ match, history }) => {
-  const { readBlog, loading, user } = useSelector(({ readBlog, loading, user }) => ({
+  const { readBlog, loading, likeLoading, commentLoading, user } = useSelector(({ readBlog, loading, user }) => ({
     readBlog: readBlog,
     loading: loading['readBlog/READ_POST'] || loading['readBlog/REMOVE_POST'],
+    likeLoading: loading['readBlog/LIKE_POST'],
+    commentLoading: loading['readBlog/WRITE_COMMENT_POST'] || loading['readBlog/REMOVE_COMMENT_POST'],
     user: user.user,
   }));
   const dispatch = useDispatch();
-  const { id } = match.params;
 
   useEffect(() => {
-    dispatch(readPost(id));
+    dispatch(initReadPost());
+    dispatch(readPost(match.params.id));
     return () => {
       dispatch(initReadPost());
     };
-  }, [dispatch, id]);
+  }, [dispatch, match.params.id]);
   useEffect(() => {
-    if (readBlog.remove) {
-      history.push('/blog/list');
-    }
-  }, [history, readBlog.remove]);
+    if (readBlog.remove) history.push('/blog/list');
+    if (readBlog.reload) dispatch(readPost(match.params.id));
+  }, [dispatch, history, readBlog.remove, readBlog.reload, match.params.id]);
 
   const onRemove = () => {
     if (window.confirm('정말 이 글을 삭제하시겠습니까?')) {
-      dispatch(removePost(id));
+      dispatch(removePost(match.params.id));
     }
   };
   const onEdit = () => {
@@ -218,7 +226,7 @@ const Read = ({ match, history }) => {
         <ReadWrapper>
           {readBlog.post && <PostBlock post={readBlog.post} />}
           {user && <AuthBlock onRemove={onRemove} onEdit={onEdit} />}
-          <BiLike style={{ cursor: 'pointer' }} onClick={() => dispatch(likePost(id))} />
+          <BiLike style={{ cursor: 'pointer' }} onClick={() => dispatch(likePost(match.params.id))} />
           {readBlog.post && <CommentBlock comment={readBlog.post.comment} />}
           {readBlog.post && <AroundBlock prev={readBlog.prev} next={readBlog.next} />}
         </ReadWrapper>

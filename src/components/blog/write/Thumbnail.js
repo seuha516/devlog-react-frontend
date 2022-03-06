@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
 import { changeField } from 'modules/blog/writeBlog';
@@ -19,6 +19,11 @@ const Text = styled.div`
   font-weight: 600;
   color: #808080;
   margin-bottom: 10px;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 `;
 const ImageWrapper = styled(FlexBox)`
   width: 100px;
@@ -36,8 +41,7 @@ const Input = styled.input`
   width: 75px;
 `;
 
-const Thumbnail = () => {
-  const thumbnail = useSelector((store) => store.writeBlog.thumbnail);
+const Thumbnail = ({ thumbnail }) => {
   const dispatch = useDispatch();
 
   const onChange = async (e) => {
@@ -62,11 +66,7 @@ const Thumbnail = () => {
       <FlexBox>
         <ImageWrapper>
           <Image
-            src={
-              thumbnail === ''
-                ? '/images/Project/Default.png'
-                : `${process.env.REACT_APP_API_IMAGE}/${thumbnail}`
-            }
+            src={thumbnail === '' ? '/images/Project/Default.png' : `${process.env.REACT_APP_API_IMAGE}/${thumbnail}`}
             alt="thumbnail"
           />
         </ImageWrapper>

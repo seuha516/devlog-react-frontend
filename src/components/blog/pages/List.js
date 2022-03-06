@@ -9,31 +9,21 @@ import TagList from 'components/blog/list/TagList';
 import SeriesList from 'components/blog/list/SeriesList';
 
 const List = ({ location, history }) => {
-  const { posts, postCount, tags, series, error, loading, user } = useSelector(
-    ({ listBlog, loading, user }) => ({
-      posts: listBlog.posts,
-      postCount: listBlog.postCount,
-      tags: listBlog.tags,
-      series: listBlog.series,
-      error: listBlog.error,
-      loading: loading['listBlog/LIST_POST'],
-      user: user.user,
-    }),
-  );
+  const { posts, postCount, tags, series, error, loading, user } = useSelector(({ listBlog, loading, user }) => ({
+    posts: listBlog.posts,
+    postCount: listBlog.postCount,
+    tags: listBlog.tags,
+    series: listBlog.series,
+    error: listBlog.error,
+    loading: loading['listBlog/LIST_POST'],
+    user: user.user,
+  }));
   const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
   useEffect(() => {
     const htmlTitle = document.querySelector('title');
     htmlTitle.innerHTML = 'Devlog - Posts';
-    return () => {
-      htmlTitle.innerHTML = 'Devlog';
-    };
-  }, []);
-  useEffect(() => {
-    dispatch(listPost(location.search));
-  }, [dispatch, location.search]);
-
-  const [page, setPage] = useState(1);
-  useEffect(() => {
+    window.scrollTo(0, 0);
     if (location.pathname === '/blog/list/tags') {
       setPage(0);
       history.push('/blog/list');
@@ -41,7 +31,11 @@ const List = ({ location, history }) => {
       setPage(2);
       history.push('/blog/list');
     }
-  }, [location.pathname, history]);
+    dispatch(listPost(location.search));
+    return () => {
+      htmlTitle.innerHTML = 'Devlog';
+    };
+  }, [dispatch, history, location.pathname, location.search]);
 
   if (error) {
     return <Error />;
@@ -57,15 +51,7 @@ const List = ({ location, history }) => {
       {page === 0
         ? tags && <TagList tags={tags} location={location} setPage={setPage} />
         : page === 1
-        ? posts && (
-            <PostList
-              posts={posts}
-              postCount={postCount}
-              location={location}
-              user={user}
-              setPage={setPage}
-            />
-          )
+        ? posts && <PostList posts={posts} postCount={postCount} location={location} user={user} setPage={setPage} />
         : series && <SeriesList series={series} setPage={setPage} />}
     </>
   );

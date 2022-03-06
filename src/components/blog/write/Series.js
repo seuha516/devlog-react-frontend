@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { AiOutlineReload } from 'react-icons/ai';
 import { BiCodeAlt } from 'react-icons/bi';
 import { BsBook } from 'react-icons/bs';
@@ -20,12 +20,17 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  margin: 20px 0;
+  margin: 20px 0 35px 0;
 `;
 const Text = styled.div`
   font-weight: 600;
   color: #808080;
   margin-bottom: 5px;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 `;
 const Select = styled.select`
   min-width: 150px;
@@ -39,23 +44,17 @@ const Input = styled.input`
   padding: 5px;
 `;
 
-const Series = () => {
-  const { series, project, catalog, loading } = useSelector(({ writeBlog, catalogBlog, loading }) => ({
-    series: writeBlog.series,
-    project: writeBlog.project,
-    catalog: writeBlog.catalog,
-    loading: loading['catalogBlog/CATALOG_POST'],
-  }));
+const Series = ({ series, project, titleList, seriesList, catalogLoading, catalogError }) => {
   const dispatch = useDispatch();
   const [newSeries, setNewSeries] = useState(false);
 
   const onChangeProject = (e) => {
-    const name = e.target.value === 'None' ? '' : e.target.value;
-    dispatch(changeField({ key: 'project', value: name }));
+    dispatch(changeField({ key: 'project', value: e.target.value === 'None' ? '' : e.target.value }));
   };
   const onChangeSeries = (e) => {
     if (e.target.value === 'New Series') {
       setNewSeries(true);
+      dispatch(changeField({ key: 'series', value: '' }));
     } else {
       setNewSeries(false);
       if (e.target.value === 'None') {
@@ -70,11 +69,11 @@ const Series = () => {
     <Wrapper>
       <Text>카테고리</Text>
       <FlexRow>
-        {loading ? (
+        {catalogLoading ? (
           <div style={{ width: '50px', height: '50px', margin: '10px' }}>
             <Loading r="30px" />
           </div>
-        ) : catalog.error ? (
+        ) : catalogError ? (
           <FlexRow>
             <div style={{ margin: '10px' }}>Error</div>
             <AiOutlineReload style={{ cursor: 'pointer' }} onClick={() => dispatch(catalogPost())} />
@@ -84,17 +83,17 @@ const Series = () => {
             <BiCodeAlt style={{ width: '30px', height: '30px', marginRight: '5px' }} />
             <Select defaultValue={project} onChange={onChangeProject}>
               <option>None</option>
-              {catalog.titles && catalog.titles.map((i) => <option key={i._id}>{i.title}</option>)}
+              {titleList && titleList.map((i) => <option key={i}>{i}</option>)}
             </Select>
           </>
         )}
       </FlexRow>
       <FlexRow>
-        {loading ? (
+        {catalogLoading ? (
           <div style={{ width: '50px', height: '50px', margin: '10px' }}>
             <Loading r="30px" />
           </div>
-        ) : catalog.error ? (
+        ) : catalogError ? (
           <FlexRow>
             <div style={{ margin: '10px' }}>Error</div>
             <AiOutlineReload style={{ cursor: 'pointer' }} onClick={() => dispatch(catalogPost())} />
@@ -106,7 +105,7 @@ const Series = () => {
             <Select defaultValue={series} onChange={onChangeSeries}>
               <option>None</option>
               <option>New Series</option>
-              {catalog.series && catalog.series.map((i) => <option key={i}>{i}</option>)}
+              {seriesList && seriesList.map((i) => <option key={i}>{i}</option>)}
             </Select>
           </>
         )}

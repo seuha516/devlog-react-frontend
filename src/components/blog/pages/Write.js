@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import Editor from '../write/Editor';
 import Thumbnail from '../write/Thumbnail';
+import Series from '../write/Series';
 import TagBox from '../write/TagBox';
 import WriteButtons from '../write/WriteButtons';
-import Series from '../write/Series';
-import { useDispatch } from 'react-redux';
-import { catalogPost } from 'modules/blog/listBlog';
+import { catalogPost, initWritePost } from 'modules/blog/writeBlog';
 
 const WriteWrapper = styled.div`
   width: 100%;
@@ -25,25 +25,52 @@ const WriteWrapper = styled.div`
     padding: 0;
     margin-right: 8px;
   }
+  @media all and (max-width: 700px) {
+    padding: 30px 10px;
+  }
 `;
 
-const Write = () => {
+const Write = ({ history }) => {
+  const { writeBlog, loading, catalogLoading, user } = useSelector(({ writeBlog, loading, user }) => ({
+    writeBlog: writeBlog,
+    loading: loading['writeBlog/WRITE_POST'] || loading['writeBlog/UPDATE_POST'],
+    catalogLoading: loading['writeBlog/CATALOG_POST'],
+    user: user.user,
+  }));
   const dispatch = useDispatch();
+
   useEffect(() => {
+    dispatch(catalogPost());
     const htmlTitle = document.querySelector('title');
     htmlTitle.innerHTML = 'Post Write';
-    dispatch(catalogPost());
     return () => {
+      dispatch(initWritePost());
       htmlTitle.innerHTML = 'Devlog';
     };
   }, [dispatch]);
+  useEffect(() => {
+    if (!user) {
+      history.push(`/blog/list`);
+    }
+    if (writeBlog.post) {
+      history.push(`/blog/read/${writeBlog.post._id}`);
+    }
+  }, [history, writeBlog.post, user]);
+
   return (
     <WriteWrapper>
-      <Editor />
-      <Thumbnail />
-      <Series />
-      <TagBox />
-      <WriteButtons />
+      <Editor title={writeBlog.title} subTitle={writeBlog.subTitle} body={writeBlog.body} />
+      <Thumbnail thumbnail={writeBlog.thumbnail} />
+      <TagBox tags={writeBlog.tags} tagList={writeBlog.catalog.tags} />
+      <Series
+        series={writeBlog.series}
+        project={writeBlog.project}
+        titleList={writeBlog.catalog.titles}
+        seriesList={writeBlog.catalog.series}
+        catalogLoading={catalogLoading}
+        catalogError={writeBlog.catalogError}
+      />
+      <WriteButtons writeBlog={writeBlog} loading={loading} />
     </WriteWrapper>
   );
 };

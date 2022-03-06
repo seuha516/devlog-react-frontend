@@ -116,7 +116,7 @@ const writeProjects = handleActions(
       };
     },
 
-    [CATALOG_PROJECT]: () => (state) => ({
+    [CATALOG_PROJECT]: (state) => ({
       ...state,
       catalog: {
         tags: null,

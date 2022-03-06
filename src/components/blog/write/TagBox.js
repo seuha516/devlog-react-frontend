@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { ChromePicker } from 'react-color';
 import { IoIosColorPalette } from 'react-icons/io';
 import styled from 'styled-components';
@@ -7,30 +7,48 @@ import { changeField } from 'modules/blog/writeBlog';
 
 const Wrapper = styled.div`
   width: 100%;
-  margin: 20px 0 40px 0;
-`;
-const FlexBox = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+  margin: 30px 0 40px 0;
+  position: relative;
+  .chrome-picker {
+    position: absolute;
+    top: 130px;
+    left: 0;
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+  }
 `;
 const Text = styled.div`
   font-weight: 600;
   color: #808080;
   margin-bottom: 10px;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 `;
 const TagForm = styled.form`
+  width: 100%;
   border-radius: 4px;
   overflow: hidden;
   display: flex;
   height: 45px;
   margin-bottom: 5px;
   input {
-    width: 200px;
+    width: calc(80% - 32px);
+    max-width: 200px;
     padding: 10px;
     background-color: #494949;
     &::placeholder {
       color: #aaaaaa;
+      -ms-user-select: none;
+      -moz-user-select: -moz-none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      user-select: none;
     }
   }
   input,
@@ -40,7 +58,8 @@ const TagForm = styled.form`
     font-size: 1rem;
   }
   button {
-    width: 50px;
+    width: calc(20% - 8px);
+    max-width: 50px;
     cursor: pointer;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -52,32 +71,54 @@ const TagForm = styled.form`
     &:hover {
       background: black;
     }
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
   }
+`;
+const TagListBlock = styled.div`
+  display: flex;
+  height: 46px;
+  margin-top: 0.5rem;
+  margin-bottom: 8px;
+  background-color: #363636;
+  padding: 15px 12.5px;
+  border-radius: 4px;
 `;
 const Tag = styled.div`
   margin-right: 0.5rem;
   color: gray;
   cursor: pointer;
+  transition: all 0.15s linear;
   &:hover {
     opacity: 0.5;
   }
 `;
-const TagListBlock = styled.div`
-  display: flex;
-  margin-top: 0.5rem;
-  background-color: #494949;
-  padding: 20px 12.5px;
+const PalleteIconWrapper = styled.div`
+  width: 35px;
+  height: 35px;
+  margin: 3.5px 0 0 5px;
+  overflow: visible;
+  svg {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    transition: all 0.2s linear;
+    color: gray;
+    &:hover {
+      color: black;
+    }
+  }
+  position: relative;
 `;
 
-const TagBox = () => {
-  const { tags, tagList } = useSelector(({ writeBlog, catalogBlog }) => ({
-    tags: writeBlog.tags,
-    tagList: catalogBlog.tags,
-  }));
+const TagBox = ({ tags, tagList }) => {
   const dispatch = useDispatch();
-
   const [input, setInput] = useState('');
   const [color, setColor] = useState('#ffffff');
+  const [popUp, setPopUp] = useState(false);
 
   const insertTag = useCallback(
     (value) => {
@@ -91,15 +132,15 @@ const TagBox = () => {
           return;
         }
       }
-      const nextTags = [...tags, { name: value, color: color }];
-      dispatch(changeField({ key: 'tags', value: nextTags }));
+      dispatch(changeField({ key: 'tags', value: [...tags, { name: value, color: color }] }));
+      setInput('');
+      setColor('#ffffff');
     },
     [color, dispatch, tags],
   );
   const onRemove = useCallback(
     (value) => {
-      const nextTags = tags.filter((i) => i !== value);
-      dispatch(changeField({ key: 'tags', value: nextTags }));
+      dispatch(changeField({ key: 'tags', value: tags.filter((i) => i.name !== value) }));
     },
     [dispatch, tags],
   );
@@ -107,8 +148,6 @@ const TagBox = () => {
     (e) => {
       e.preventDefault();
       insertTag(input.trim());
-      setInput('');
-      setColor('#ffffff');
     },
     [input, insertTag],
   );
@@ -116,6 +155,13 @@ const TagBox = () => {
   return (
     <Wrapper>
       <Text>태그</Text>
+      <TagListBlock>
+        {tags.map((tag) => (
+          <Tag key={tag.name} onClick={() => onRemove(tag.name)} style={{ color: tag.color }}>
+            #{tag.name}
+          </Tag>
+        ))}
+      </TagListBlock>
       <TagForm onSubmit={onSubmit}>
         <input
           placeholder="태그를 입력하세요"
@@ -127,32 +173,13 @@ const TagBox = () => {
           style={{ color: color }}
         />
         <button type="submit">추가</button>
+        <PalleteIconWrapper>
+          <IoIosColorPalette onClick={() => setPopUp(!popUp)} />
+        </PalleteIconWrapper>
       </TagForm>
-      <FlexBox>
-        <IoIosColorPalette
-          style={{
-            width: '30px',
-            height: '30px',
-            marginRight: '5px',
-          }}
-        />
-        <ChromePicker disableAlpha color={color} onChange={(c) => setColor(c.hex)} />
-      </FlexBox>
-      <TagList tags={tags} onRemove={onRemove} />
+      {popUp && <ChromePicker disableAlpha color={color} onChange={(c) => setColor(c.hex)} />}
     </Wrapper>
   );
 };
-const TagList = React.memo(({ tags, onRemove }) => (
-  <TagListBlock>
-    {tags.map((tag) => (
-      <TagItem key={tag.name} tag={tag} onRemove={onRemove} />
-    ))}
-  </TagListBlock>
-));
-const TagItem = React.memo(({ tag, onRemove }) => (
-  <Tag onClick={() => onRemove(tag)} style={{ color: tag.color }}>
-    #{tag.name}
-  </Tag>
-));
 
 export default TagBox;

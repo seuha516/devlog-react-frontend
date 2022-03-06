@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { Quill } from 'react-quill';
@@ -11,7 +11,7 @@ import 'katex/dist/katex.min.css';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/monokai-sublime.css';
 
-import { changeField, initWritePost } from 'modules/blog/writeBlog';
+import { changeField } from 'modules/blog/writeBlog';
 
 window.katex = katex;
 Quill.register('modules/imageUploader', ImageUploader);
@@ -45,20 +45,8 @@ const QuillWrapper = styled.div`
   }
 `;
 
-const Editor = () => {
+const Editor = ({ title, subTitle, body }) => {
   const dispatch = useDispatch();
-  const { title, body, subTitle } = useSelector(({ writeBlog }) => ({
-    title: writeBlog.title,
-    subTitle: writeBlog.subTitle,
-    body: writeBlog.body,
-  }));
-
-  useEffect(() => {
-    return () => {
-      dispatch(initWritePost());
-    };
-  }, [dispatch]);
-
   const onChangeField = useCallback((payload) => dispatch(changeField(payload)), [dispatch]);
 
   return (
@@ -81,7 +69,6 @@ const Editor = () => {
     </>
   );
 };
-
 const BodyBlock = ({ onChangeField, body }) => {
   const quillElement = useRef(null); // Quill을 적용할 DivElement를 설정
   const quillInstance = useRef(null); // Quill 인스턴스를 설정
@@ -94,11 +81,7 @@ const BodyBlock = ({ onChangeField, body }) => {
       syntax: { highlight: (text) => hljs.highlightAuto(text).value },
       toolbar: {
         container: [
-          [
-            { font: [] },
-            { size: ['small', false, 'large', 'huge'] },
-            { header: ['1', '2', '3', '4', '5', '6'] },
-          ],
+          [{ font: [] }, { size: ['small', false, 'large', 'huge'] }, { header: ['1', '2', '3', '4', '5', '6'] }],
           ['bold', 'italic', 'underline', 'strike'],
           [{ color: [] }, { background: [] }],
           [{ script: 'sub' }, { script: 'super' }, 'formula', 'blockquote'],

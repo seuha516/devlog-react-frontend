@@ -99,7 +99,7 @@ const writeBlog = handleActions(
       };
     },
 
-    [CATALOG_POST]: () => (state) => ({
+    [CATALOG_POST]: (state) => ({
       ...state,
       catalog: {
         titles: null,
