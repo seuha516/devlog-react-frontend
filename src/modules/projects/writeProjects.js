@@ -6,11 +6,12 @@ import * as projectAPI from 'lib/api/project';
 const INIT_WRITE_PROJECT = 'writeProjects/INIT_WRITE_PROJECT';
 const CHANGE_FIELD = 'writeProjects/CHANGE_FIELD';
 const SET_ORIGINAL_PROJECT = 'writeProjects/SET_ORIGINAL_PROJECT';
-const [WRITE_PROJECT, WRITE_PROJECT_SUCCESS, WRITE_PROJECT_FAILURE] = createRequestActionTypes(
-  'writeProjects/WRITE_PROJECT',
-);
-const [UPDATE_PROJECT, UPDATE_PROJECT_SUCCESS, UPDATE_PROJECT_FAILURE] = createRequestActionTypes(
-  'writeProjects/UPDATE_PROJECT',
+const [WRITE_PROJECT, WRITE_PROJECT_SUCCESS, WRITE_PROJECT_FAILURE] =
+  createRequestActionTypes('writeProjects/WRITE_PROJECT');
+const [UPDATE_PROJECT, UPDATE_PROJECT_SUCCESS, UPDATE_PROJECT_FAILURE] =
+  createRequestActionTypes('writeProjects/UPDATE_PROJECT');
+const [CATALOG_PROJECT, CATALOG_PROJECT_SUCCESS, CATALOG_PROJECT_FAILURE] = createRequestActionTypes(
+  'writeProjects/CATALOG_PROJECT',
 );
 
 export const initWriteProject = createAction(INIT_WRITE_PROJECT);
@@ -18,13 +19,16 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({ key
 export const setOriginalProject = createAction(SET_ORIGINAL_PROJECT, (project) => project);
 export const writeProject = createAction(WRITE_PROJECT, (project) => project);
 export const updateProject = createAction(UPDATE_PROJECT, ({ id, project }) => ({ id, project }));
+export const catalogProject = createAction(CATALOG_PROJECT);
 
 const writeProjectSaga = createRequestSaga(WRITE_PROJECT, projectAPI.write);
 const updateProjectSaga = createRequestSaga(UPDATE_PROJECT, projectAPI.update);
+const catalogProjectSaga = createRequestSaga(CATALOG_PROJECT, projectAPI.catalog);
 
 export function* writeProjectsSaga() {
   yield takeLatest(WRITE_PROJECT, writeProjectSaga);
   yield takeLatest(UPDATE_PROJECT, updateProjectSaga);
+  yield takeLatest(CATALOG_PROJECT, catalogProjectSaga);
 }
 
 const initialState = {
@@ -47,9 +51,14 @@ const initialState = {
     website: [],
     github: [],
   },
+  originalId: null,
   project: null,
   error: null,
-  originalId: null,
+
+  catalog: {
+    tags: null,
+  },
+  catalogError: null,
 };
 
 const writeProjects = handleActions(
@@ -73,6 +82,7 @@ const writeProjects = handleActions(
       link: project.link,
       originalId: project._id,
     }),
+
     [WRITE_PROJECT]: (state) => ({
       ...state,
       project: null,
@@ -103,6 +113,27 @@ const writeProjects = handleActions(
       return {
         ...state,
         error,
+      };
+    },
+
+    [CATALOG_PROJECT]: () => (state) => ({
+      ...state,
+      catalog: {
+        tags: null,
+      },
+      catalogError: null,
+    }),
+    [CATALOG_PROJECT_SUCCESS]: (state, { payload: tags }) => ({
+      ...state,
+      catalog: {
+        tags,
+      },
+    }),
+    [CATALOG_PROJECT_FAILURE]: (state, { payload: error }) => {
+      alert(error.response.data.message);
+      return {
+        ...state,
+        catalogError: error,
       };
     },
   },

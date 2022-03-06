@@ -36,7 +36,7 @@ const Write = () => {
     return () => {
       htmlTitle.innerHTML = 'Devlog';
     };
-  }, []);
+  }, [dispatch]);
   return (
     <WriteWrapper>
       <Editor />

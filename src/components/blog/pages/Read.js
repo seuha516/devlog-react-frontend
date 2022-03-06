@@ -1,8 +1,7 @@
 import Error from 'components/utils/Error';
 import Loading from 'components/utils/Loading';
 import NotFound from 'components/utils/NotFound';
-import { readPost, initReadPost } from 'modules/blog/readBlog';
-import { removePost, initRemovePost } from 'modules/blog/removeBlog';
+import { readPost, removePost, likePost, initReadPost } from 'modules/blog/readBlog';
 import 'react-quill/dist/quill.snow.css';
 
 import React, { useEffect } from 'react';
@@ -15,7 +14,6 @@ import { setOriginalPost } from 'modules/blog/writeBlog';
 import ListButton from '../read/ListButton';
 import ProjectLink from '../read/ProjectLink';
 import SeriesLink from '../read/SeriesLink';
-import { likePost } from 'modules/blog/likeBlog';
 
 const FlexRow = styled.div`
   display: flex;
@@ -172,14 +170,11 @@ const AroundNull = styled.div`
 `;
 
 const Read = ({ match, history }) => {
-  const { readBlog, removeBlog, loading, user } = useSelector(
-    ({ readBlog, removeBlog, loading, user }) => ({
-      readBlog: readBlog,
-      removeBlog: removeBlog,
-      loading: loading['readBlog/READ_POST'] || loading['removeBlog/REMOVE_POST'],
-      user: user.user,
-    }),
-  );
+  const { readBlog, removeBlog, loading, user } = useSelector(({ readBlog, loading, user }) => ({
+    readBlog: readBlog,
+    loading: loading['readBlog/READ_POST'] || loading['readBlog/REMOVE_POST'],
+    user: user.user,
+  }));
   const dispatch = useDispatch();
   const { id } = match.params;
 
@@ -187,14 +182,13 @@ const Read = ({ match, history }) => {
     dispatch(readPost(id));
     return () => {
       dispatch(initReadPost());
-      dispatch(initRemovePost());
     };
   }, [dispatch, id]);
   useEffect(() => {
-    if (removeBlog.remove) {
+    if (readBlog.remove) {
       history.push('/blog/list');
     }
-  }, [history, removeBlog.remove]);
+  }, [history, readBlog.remove]);
 
   const onRemove = () => {
     if (window.confirm('정말 이 글을 삭제하시겠습니까?')) {
