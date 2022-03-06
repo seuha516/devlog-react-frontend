@@ -27,7 +27,7 @@ const Text = styled.div`
 const TagInfo = ({ tagCount }) => {
   return (
     <Wrapper>
-      <Count>{`${tagCount}`}</Count>
+      <Count>{tagCount}</Count>
       <Text>Tags</Text>
     </Wrapper>
   );

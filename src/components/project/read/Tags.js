@@ -56,9 +56,9 @@ const Tags = ({ tags }) => {
           <Tag
             key={tag.tag}
             style={{ color: tag.color }}
-            to={`/project/list?tag=${tag.tag}`}
+            to={`/project/list?tag=${tag.name}`}
           >
-            {`#${tag.tag}`}
+            {`#${tag.name}`}
           </Tag>
         ))}
       </TagBox>

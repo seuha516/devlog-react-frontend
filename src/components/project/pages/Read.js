@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { readProject, unloadProject } from 'modules/projects/readProjects';
+import { readProject, initReadProject } from 'modules/projects/readProjects';
 import { setOriginalProject } from 'modules/projects/writeProjects';
-import { removeProject, initRemove } from 'modules/projects/removeProjects';
+import {
+  removeProject,
+  initRemoveProject,
+} from 'modules/projects/removeProjects';
 
 import Header from 'components/project/read/Header';
 import Thumbnail from 'components/project/read/Thumbnail';
@@ -56,14 +59,14 @@ const Read = ({ match, history }) => {
     }),
   );
 
-  const { Id } = match.params;
+  const { id } = match.params;
   useEffect(() => {
-    dispatch(readProject(Id));
+    dispatch(readProject(id));
     return () => {
-      dispatch(unloadProject());
-      dispatch(initRemove());
+      dispatch(initReadProject());
+      dispatch(initRemoveProject());
     };
-  }, [dispatch, Id]);
+  }, [dispatch, id]);
 
   const onEdit = () => {
     dispatch(setOriginalProject(project));
@@ -71,7 +74,7 @@ const Read = ({ match, history }) => {
   };
   const onRemove = () => {
     if (window.confirm('정말 이 프로젝트를 삭제하시겠습니까?') === true) {
-      dispatch(removeProject(Id));
+      dispatch(removeProject(id));
     }
   };
   useEffect(() => {

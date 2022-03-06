@@ -114,7 +114,7 @@ const PostTag = styled(FlexRow)`
 `;
 const TagsText = styled.div`
   font-size: 18px;
-  color: white;
+  color: darkgrey;
 `;
 
 const Post = ({ post }) => {
@@ -128,37 +128,20 @@ const Post = ({ post }) => {
   return (
     <PostWrapper to={`/blog/read/${post._id}`}>
       <ThumbnailWrapper>
-        <PostThumbnail
-          src={
-            post.thumbnail === ''
-              ? '/images/Blog/Default.png'
-              : `${process.env.REACT_APP_API_URL}/get/${post.thumbnail}`
-          }
-        />
+        <PostThumbnail src={post.thumbnail === '' ? '/images/Blog/Default.png' : `${process.env.REACT_APP_API_IMAGE}/${post.thumbnail}`} />
       </ThumbnailWrapper>
       <PostTextWrapper>
         <PostTitleAndDate>
           <PostTitle>{post.title}</PostTitle>
-          <PostPublishedDate>
-            {dateToString(new Date(post.date.publishedDate))}
-          </PostPublishedDate>
+          <PostPublishedDate>{dateToString(new Date(post.date.publishedDate))}</PostPublishedDate>
         </PostTitleAndDate>
         <PostSubTitle>{post.subTitle}</PostSubTitle>
         <PostTags>
           {post.tags.map((tag, index) => {
             if (index < 3) {
-              return (
-                <PostTag
-                  key={tag.tag}
-                  style={{ color: tag.color }}
-                >{`#${tag.tag}`}</PostTag>
-              );
+              return <PostTag key={tag._id} style={{ color: tag.color }}>{`#${tag.name}`}</PostTag>;
             } else if (index === 3) {
-              return (
-                <TagsText key={tag.tag}>{` + ${
-                  post.tags.length - 3
-                }`}</TagsText>
-              );
+              return <TagsText key={tag._id}>{` + ${post.tags.length - 3}`}</TagsText>;
             } else return null;
           })}
         </PostTags>

@@ -18,7 +18,7 @@ const PostWrapper = styled(Link)`
   display: flex;
   width: 100%;
   max-width: 500px;
-  height: auto;
+  height: 110px;
   justify-content: space-between;
   align-items: center;
   background-color: #ffffff7d;
@@ -32,14 +32,7 @@ const PostWrapper = styled(Link)`
     box-shadow: 3px 3px;
   }
 `;
-const Index = styled(FlexRow)`
-  height: 100%;
-  font-size: 45px;
-  font-family: 'Oswald', sans-serif;
-  @media all and (max-width: 470px) {
-    margin-right: 15px;
-  }
-`;
+
 const ThumbnailWrapper = styled(FlexRow)`
   width: 75px;
   height: 75px;
@@ -99,30 +92,27 @@ const PostSubTitle = styled.div`
 const Post = ({ post, index }) => {
   const dateToString = (date) => {
     const format = (n) => (n < 10 ? `0${n}` : `${n}`);
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    let year = date.getFullYear();
-    return `${year}-${format(month)}-${format(day)}`;
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${format(year % 100)}-${format(month)}-${format(day)}`;
   };
 
   return (
     <PostWrapper key={post._id} to={`/blog/read/${post._id}`}>
-      <Index>{`${index + 1}.`}</Index>
       <ThumbnailWrapper>
         <PostThumbnail
           src={
             post.thumbnail === ''
               ? '/images/Blog/Default.png'
-              : `${process.env.REACT_APP_API_URL}/get/${post.thumbnail}`
+              : `${process.env.REACT_APP_API_IMAGE}/${post.thumbnail}`
           }
         />
       </ThumbnailWrapper>
       <PostTextWrapper>
         <PostTitleAndDate>
           <PostTitle>{post.title}</PostTitle>
-          <PostPublishedDate>
-            {dateToString(new Date(post.date.publishedDate))}
-          </PostPublishedDate>
+          <PostPublishedDate>{dateToString(new Date(post.date.publishedDate))}</PostPublishedDate>
         </PostTitleAndDate>
         <PostSubTitle>{post.subTitle}</PostSubTitle>
       </PostTextWrapper>

@@ -9,7 +9,6 @@ import TagList from 'components/blog/list/TagList';
 import SeriesList from 'components/blog/list/SeriesList';
 
 const List = ({ location, history }) => {
-  const dispatch = useDispatch();
   const { posts, postCount, tags, series, error, loading, user } = useSelector(
     ({ listBlog, loading, user }) => ({
       posts: listBlog.posts,
@@ -21,6 +20,7 @@ const List = ({ location, history }) => {
       user: user.user,
     }),
   );
+  const dispatch = useDispatch();
   useEffect(() => {
     const htmlTitle = document.querySelector('title');
     htmlTitle.innerHTML = 'Devlog - Posts';
@@ -31,40 +31,42 @@ const List = ({ location, history }) => {
   useEffect(() => {
     dispatch(listPost(location.search));
   }, [dispatch, location.search]);
+
+  const [page, setPage] = useState(1);
   useEffect(() => {
     if (location.pathname === '/blog/list/tags') {
       setPage(0);
       history.push('/blog/list');
-    }
-    if (location.pathname === '/blog/list/series') {
+    } else if (location.pathname === '/blog/list/series') {
       setPage(2);
       history.push('/blog/list');
     }
   }, [location.pathname, history]);
 
-  const [page, setPage] = useState(1);
-
   if (error) {
     return <Error />;
-  }
-  if (loading) {
-    return <Loading />;
+  } else if (loading) {
+    return (
+      <div style={{ width: '100%', height: 'calc(100vh - 62px)' }}>
+        <Loading />
+      </div>
+    );
   }
   return (
     <>
-      {page === 0 ? (
-        <TagList tags={tags} location={location} setPage={setPage} />
-      ) : page === 1 ? (
-        <PostList
-          posts={posts}
-          postCount={postCount}
-          location={location}
-          user={user}
-          setPage={setPage}
-        />
-      ) : (
-        <SeriesList series={series} setPage={setPage} />
-      )}
+      {page === 0
+        ? tags && <TagList tags={tags} location={location} setPage={setPage} />
+        : page === 1
+        ? posts && (
+            <PostList
+              posts={posts}
+              postCount={postCount}
+              location={location}
+              user={user}
+              setPage={setPage}
+            />
+          )
+        : series && <SeriesList series={series} setPage={setPage} />}
     </>
   );
 };

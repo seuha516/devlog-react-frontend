@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-
 import { BsFillPersonCheckFill } from 'react-icons/bs';
+import styled from 'styled-components';
 import { logout } from 'modules/user';
 
 const FlexRow = styled.div`
@@ -18,7 +17,6 @@ const FlexColumn = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
-//헤더
 const HeaderWrapper = styled(FlexRow)`
   position: fixed;
   width: 100%;
@@ -33,7 +31,6 @@ const HeaderWrapper = styled(FlexRow)`
   -khtml-user-select: none;
   user-select: none;
 `;
-//타이틀 부분
 const TitleWrapper = styled(FlexRow)`
   height: 60px;
 `;
@@ -67,9 +64,9 @@ const UserIcon = styled(BsFillPersonCheckFill)`
     color: #ff5a5a;
   }
 `;
-//카테고리
 const CategoryWrapper = styled(FlexRow)`
   width: 60%;
+  height: 100%;
   justify-content: space-evenly;
   margin-top: 3px;
   @media all and (max-width: 445px) {
@@ -91,12 +88,10 @@ const Category = styled(NavLink)`
     color: #fffbbf;
   }
 `;
-//가짜헤더
 const FakeHeader = styled.div`
   width: 100%;
   height: 62px;
 `;
-//메뉴
 const NavbarIcon = styled.img`
   width: 55px;
   height: 55px;
@@ -107,9 +102,7 @@ const NavbarIcon = styled.img`
   cursor: pointer;
   transition: all 0.2s linear;
   z-index: 110;
-  transform: rotateY(
-    ${(props) => (props.state === 'open' ? '0deg' : '180deg')}
-  );
+  transform: rotateY(${(props) => (props.state === 'open' ? '0deg' : '180deg')});
   filter: invert(100%);
   -ms-user-select: none;
   -moz-user-select: -moz-none;
@@ -167,7 +160,6 @@ const NavbarOutside = styled.div`
   }
 `;
 
-//카테고리 목록
 const Categories = [
   {
     text: 'About',
@@ -248,19 +240,10 @@ const NavbarBlock = () => {
 
   return (
     <>
-      <NavbarIcon
-        src="/images/Header/Navbar.png"
-        state={state}
-        onClick={onClick}
-      />
+      <NavbarIcon src="/images/Header/Navbar.png" state={state} onClick={onClick} />
       <Navbar state={state}>
         {Categories.map((c) => (
-          <NavbarCategory
-            key={c.text}
-            to={c.to}
-            activeClassName="active"
-            onClick={onClick}
-          >
+          <NavbarCategory key={c.text} to={c.to} activeClassName="active" onClick={onClick}>
             {c.text}
           </NavbarCategory>
         ))}

@@ -29,7 +29,7 @@ const Count = styled.div`
 
 const SeriesItem = ({ series }) => {
   return (
-    <SeriesWrapper key={series.name} to={`blog/series/${series.name}`}>
+    <SeriesWrapper key={series.name} to={`blog/series?series=${series.name}`}>
       <Name>{series.name}</Name>
       <Count>{series.count}</Count>
     </SeriesWrapper>

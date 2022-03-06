@@ -27,7 +27,7 @@ const Text = styled.div`
 const Info = ({ postCount }) => {
   return (
     <Wrapper>
-      <Count>{`${postCount}`}</Count>
+      <Count>{postCount}</Count>
       <Text>Posts</Text>
     </Wrapper>
   );

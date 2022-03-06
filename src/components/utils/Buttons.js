@@ -6,11 +6,11 @@ const Wrapper = styled.div`
   width: 60px;
   height: 60px;
   position: fixed;
+  top: calc(100% - 90px);
+  left: calc(100% - 90px);
   display: flex;
   justify-content: center;
   align-items: center;
-  top: calc(100% - 90px);
-  left: calc(100% - 90px);
   border-radius: 30px;
   background: #ffffff2e;
   cursor: pointer;
@@ -34,15 +34,13 @@ const Wrapper = styled.div`
   }
 `;
 
-const Buttons = () => {
-  const onClick = () => {
-    window.scrollTo(0, 0);
-  };
-  return (
-    <Wrapper onClick={onClick}>
-      <AiOutlineArrowUp />
-    </Wrapper>
-  );
-};
-
+const Buttons = () => (
+  <Wrapper
+    onClick={() => {
+      window.scrollTo(0, 0);
+    }}
+  >
+    <AiOutlineArrowUp />
+  </Wrapper>
+);
 export default Buttons;

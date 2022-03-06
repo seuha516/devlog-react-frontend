@@ -38,7 +38,11 @@ const List = ({ location }) => {
     return <Error />;
   }
   if (loading) {
-    return <Loading />;
+    return (
+      <div style={{ width: '100%', height: 'calc(100vh - 62px)' }}>
+        <Loading />
+      </div>
+    );
   }
   return (
     <>

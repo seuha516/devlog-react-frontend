@@ -1,8 +1,8 @@
 import Error from 'components/utils/Error';
 import Loading from 'components/utils/Loading';
 import NotFound from 'components/utils/NotFound';
-import { readPost, unloadPost } from 'modules/blog/readBlog';
-import { removePost, initRemove } from 'modules/blog/removeBlog';
+import { readPost, initReadPost } from 'modules/blog/readBlog';
+import { removePost, initRemovePost } from 'modules/blog/removeBlog';
 import 'react-quill/dist/quill.snow.css';
 
 import React, { useEffect } from 'react';
@@ -10,11 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { RiBallPenLine } from 'react-icons/ri';
-import { BiTrashAlt } from 'react-icons/bi';
+import { BiTrashAlt, BiLike } from 'react-icons/bi';
 import { setOriginalPost } from 'modules/blog/writeBlog';
 import ListButton from '../read/ListButton';
 import ProjectLink from '../read/ProjectLink';
 import SeriesLink from '../read/SeriesLink';
+import { likePost } from 'modules/blog/likeBlog';
 
 const FlexRow = styled.div`
   display: flex;
@@ -29,7 +30,6 @@ const FlexColumn = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
-//읽기 구역
 const ReadWrapper = styled.div`
   width: 100%;
   max-width: 1000px;
@@ -40,7 +40,6 @@ const ReadWrapper = styled.div`
     padding: 40px 15px 10px 15px;
   }
 `;
-//포스트 구역
 const PostWrapper = styled.div`
   background: white;
 `;
@@ -89,7 +88,6 @@ const TagsWrapper = styled.div`
   padding: 15px;
   margin-bottom: 20px;
 `;
-//편집 구역
 const AuthWrapper = styled(FlexRow)`
   justify-content: flex-end;
 `;
@@ -134,7 +132,6 @@ const AuthButtonText = styled.div`
   font-size: 18px;
   font-family: 'Lato', sans-serif;
 `;
-
 const AroundWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -175,80 +172,73 @@ const AroundNull = styled.div`
 `;
 
 const Read = ({ match, history }) => {
-  const { Id } = match.params;
-  const dispatch = useDispatch();
-  const { post, error, removeBlog, loading, user } = useSelector(
+  const { readBlog, removeBlog, loading, user } = useSelector(
     ({ readBlog, removeBlog, loading, user }) => ({
-      post: readBlog.post,
-      error: readBlog.error,
+      readBlog: readBlog,
       removeBlog: removeBlog,
-      loading:
-        loading['readBlog/READ_POST'] || loading['removeBlog/REMOVE_POST'],
+      loading: loading['readBlog/READ_POST'] || loading['removeBlog/REMOVE_POST'],
       user: user.user,
     }),
   );
+  const dispatch = useDispatch();
+  const { id } = match.params;
+
   useEffect(() => {
-    dispatch(readPost(Id));
+    dispatch(readPost(id));
     return () => {
-      dispatch(unloadPost());
-      dispatch(initRemove());
+      dispatch(initReadPost());
+      dispatch(initRemovePost());
     };
-  }, [dispatch, Id]);
+  }, [dispatch, id]);
+  useEffect(() => {
+    if (removeBlog.remove) {
+      history.push('/blog/list');
+    }
+  }, [history, removeBlog.remove]);
+
   const onRemove = () => {
-    if (window.confirm('정말 이 글을 삭제하시겠습니까?') === true) {
-      dispatch(removePost(Id));
+    if (window.confirm('정말 이 글을 삭제하시겠습니까?')) {
+      dispatch(removePost(id));
     }
   };
   const onEdit = () => {
-    dispatch(setOriginalPost(post.post));
+    dispatch(setOriginalPost(readBlog.post));
     history.push('/blog/write');
   };
-  useEffect(() => {
-    if (removeBlog.error) {
-      alert('포스트 삭제에 실패했습니다.');
-    } else if (removeBlog.remove) {
-      history.push('/blog/list');
-    }
-  }, [history, removeBlog]);
 
-  return (
-    <ReadComponent
-      post={post}
-      loading={loading}
-      error={error}
-      user={user}
-      onRemove={onRemove}
-      onEdit={onEdit}
-    />
-  );
-};
-const ReadComponent = ({ post, error, loading, user, onRemove, onEdit }) => {
-  // 에러 발생 시
-  if (error) {
-    if (error.response && error.response.status === 404) {
+  if (readBlog.error) {
+    if (readBlog.error.response.status === 404) {
       return <NotFound />;
+    } else {
+      return <Error />;
     }
-    return <Error />;
   } else if (loading) {
-    return <Loading />;
+    return (
+      <div style={{ width: '100%', height: 'calc(100vh - 62px)' }}>
+        <Loading />
+      </div>
+    );
   } else {
     return (
       <FlexColumn>
         <ReadWrapper>
-          {post && <PostBlock post={post.post} />}
+          {readBlog.post && <PostBlock post={readBlog.post} />}
           {user && <AuthBlock onRemove={onRemove} onEdit={onEdit} />}
-          {post && <AroundBlock prev={post.prev[0]} next={post.next[0]} />}
+          <BiLike style={{ cursor: 'pointer' }} onClick={() => dispatch(likePost(id))} />
+          {readBlog.post && <CommentBlock comment={readBlog.post.comment} />}
+          {readBlog.post && <AroundBlock prev={readBlog.prev} next={readBlog.next} />}
         </ReadWrapper>
         <ListButton />
       </FlexColumn>
     );
   }
 };
+
 const PostBlock = ({ post }) => {
-  const { title, subTitle, body, tags, date, series } = post;
+  const { title, subTitle, body, tags, date, series, project } = post;
   useEffect(() => {
     const htmlTitle = document.querySelector('title');
-    htmlTitle.innerHTML = `${title}`;
+    htmlTitle.innerHTML = title;
     return () => {
       htmlTitle.innerHTML = 'Devlog';
     };
@@ -259,8 +249,9 @@ const PostBlock = ({ post }) => {
     let month = date.getMonth() + 1;
     let day = date.getDate();
     let year = date.getFullYear();
-    return `${year % 100}.${format(month)}.${format(day)}`;
+    return `${format(year % 100)}.${format(month)}.${format(day)}`;
   };
+
   return (
     <PostWrapper className="ql-snow">
       <hr />
@@ -272,12 +263,9 @@ const PostBlock = ({ post }) => {
         {`마지막 수정: ${dateToString(date.lastModifiedDate)}`}
       </PostDate>
       <hr />
-      {series.project.name !== '' && <ProjectLink project={series.project} />}
-      <PostBody
-        className="ql-editor"
-        dangerouslySetInnerHTML={{ __html: body }}
-      />
-      {series.name !== '' && <SeriesLink series={series.name} />}
+      {project !== '' && <ProjectLink project={project} />}
+      <PostBody className="ql-editor" dangerouslySetInnerHTML={{ __html: body }} />
+      {series !== '' && <SeriesLink series={series} />}
       <PostTagsBlock tags={tags} />
     </PostWrapper>
   );
@@ -287,11 +275,11 @@ const PostTagsBlock = ({ tags }) => {
     <TagsWrapper>
       {tags.map((tag) => (
         <Link
-          to={`/blog/list/?tag=${tag.tag}`}
+          to={`/blog/list/?tag=${tag.name}`}
           key={tag._id}
           style={{ color: tag.color, marginRight: '10px' }}
         >
-          #{tag.tag}
+          #{tag.name}
         </Link>
       ))}
     </TagsWrapper>
@@ -310,6 +298,9 @@ const AuthBlock = ({ onRemove, onEdit }) => {
       </AuthButtonWrapper>
     </AuthWrapper>
   );
+};
+const CommentBlock = ({ comment }) => {
+  return <div></div>;
 };
 const AroundBlock = ({ prev, next }) => {
   return (

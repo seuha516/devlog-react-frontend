@@ -1,19 +1,15 @@
 import { createAction, handleActions } from 'redux-actions';
 import { takeLatest } from 'redux-saga/effects';
-import createRequestSaga, {
-  createRequestActionTypes,
-} from 'lib/createRequestSaga';
+import createRequestSaga, { createRequestActionTypes } from 'lib/createRequestSaga';
 import * as projectAPI from 'lib/api/project';
 
-const [
-  READ_PROJECT,
-  READ_PROJECT_SUCCESS,
-  READ_PROJECT_FAILURE,
-] = createRequestActionTypes('readProjects/READ_PROJECT');
-const UNLOAD_PROJECT = 'readProjects/UNLOAD_PROJECT';
+const [READ_PROJECT, READ_PROJECT_SUCCESS, READ_PROJECT_FAILURE] = createRequestActionTypes(
+  'readProjects/READ_PROJECT',
+);
+const INIT_READ_PROJECT = 'readProjects/INIT_READ_PROJECT';
 
 export const readProject = createAction(READ_PROJECT, (id) => id);
-export const unloadProject = createAction(UNLOAD_PROJECT);
+export const initReadProject = createAction(INIT_READ_PROJECT);
 
 const readProjectSaga = createRequestSaga(READ_PROJECT, projectAPI.read);
 export function* readProjectsSaga() {
@@ -32,11 +28,14 @@ const readBlog = handleActions(
       ...state,
       project,
     }),
-    [READ_PROJECT_FAILURE]: (state, { payload: error }) => ({
-      ...state,
-      error,
-    }),
-    [UNLOAD_PROJECT]: () => initialState,
+    [READ_PROJECT_FAILURE]: (state, { payload: error }) => {
+      alert(error.response.data.message);
+      return {
+        ...state,
+        error,
+      };
+    },
+    [INIT_READ_PROJECT]: () => initialState,
   },
   initialState,
 );

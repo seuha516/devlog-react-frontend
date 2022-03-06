@@ -3,23 +3,23 @@ import styled from 'styled-components';
 
 const FlexBox = styled.div`
   width: 100%;
-  height: calc(100vh - 62px);
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+const LoadingComponent = styled.div`
+  width: ${(props) => props.r};
+  height: ${(props) => props.r};
+  border: 3px solid #ff3f3f;
+  border-top-color: white;
+  border-right-color: white;
+  border-radius: 100%;
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   user-select: none;
-`;
-const LoadingComponent = styled.div`
-  width: 100px;
-  height: 100px;
-  border: 5px solid #ff3f3f;
-  border-top-color: white;
-  border-right-color: white;
-  border-radius: 100%;
   animation: spin 1s infinite linear;
   @keyframes spin {
     from {
@@ -31,10 +31,10 @@ const LoadingComponent = styled.div`
   }
 `;
 
-const Loading = () => {
+const Loading = ({ r }) => {
   return (
     <FlexBox>
-      <LoadingComponent />
+      <LoadingComponent r={r ? r : '80px'} />
     </FlexBox>
   );
 };

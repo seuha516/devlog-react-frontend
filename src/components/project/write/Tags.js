@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { IoIosPricetags } from 'react-icons/io';
 import { BsPlusCircle } from 'react-icons/bs';
 import { changeField } from 'modules/projects/writeProjects';
-import { getlistProject } from 'modules/projects/getlistProjects';
+import { catalogProject } from 'modules/projects/catalogProjects';
 
 const FlexRow = styled.div`
   display: flex;
@@ -119,7 +119,7 @@ const Tag = styled.div`
 const Tags = () => {
   const dispatch = useDispatch();
   const tags = useSelector((state) => state.writeProjects.tags);
-  const tagList = useSelector((state) => state.getlistProjects.tags);
+  const tagList = useSelector((state) => state.catalogProjects.tags);
   const [localTags, setLocalTags] = useState(tags);
 
   const [input, setInput] = useState('');
@@ -133,26 +133,26 @@ const Tags = () => {
       return;
     }
     for (let i = 0; i < localTags.length; i++) {
-      if (localTags[i].tag === input) {
+      if (localTags[i].name === input) {
         alert('이미 있는 태그입니다.');
         return;
       }
     }
-    const nextTags = [...localTags, { tag: input, color: pallete }];
+    const nextTags = [...localTags, { name: input, color: pallete }];
     setLocalTags(nextTags);
     setInput('');
     setPallete('#ffffff');
     setPalleteOpen(false);
   };
   const removeTag = (tagName) => {
-    const nextTags = localTags.filter((tag) => tag.tag !== tagName);
+    const nextTags = localTags.filter((tag) => tag.name !== tagName);
     setLocalTags(nextTags);
   };
   useEffect(() => {
     dispatch(changeField({ key: 'tags', value: localTags }));
   }, [dispatch, localTags]);
   useEffect(() => {
-    dispatch(getlistProject());
+    dispatch(catalogProject());
   }, [dispatch]);
 
   return (
@@ -201,11 +201,11 @@ const Tags = () => {
       <TagBox>
         {tags.map((tag) => (
           <Tag
-            key={tag.tag}
+            key={tag.name}
             style={{ color: tag.color }}
-            onClick={() => removeTag(tag.tag)}
+            onClick={() => removeTag(tag.name)}
           >
-            {`#${tag.tag}`}
+            {`#${tag.name}`}
           </Tag>
         ))}
       </TagBox>

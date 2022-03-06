@@ -34,6 +34,11 @@ const Home = styled(Link)`
     height: 30px;
     margin: 0 10px 1.5px 0;
   }
+  cursor: pointer;
+  transition: all 0.2s linear;
+  &:hover {
+    color: white;
+  }
 `;
 
 const NotFound = () => {

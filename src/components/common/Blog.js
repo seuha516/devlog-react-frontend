@@ -28,8 +28,8 @@ const Blog = () => {
         <Route path="/blog" exact component={Main} />
         <Route path="/blog/list" component={List} />
         <Route path="/blog/write" component={Write} />
-        <Route path="/blog/read/:Id" component={Read} />
-        <Route path="/blog/series/:name" component={Series} />
+        <Route path="/blog/read/:id" component={Read} />
+        <Route path="/blog/series" component={Series} />
         <Route component={NotFound} />
       </Switch>
     </Background>

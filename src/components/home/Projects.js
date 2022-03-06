@@ -6,7 +6,7 @@ import { BsArrowRight } from 'react-icons/bs';
 
 import { listProject } from 'modules/projects/listProjects';
 import Project from 'components/home/Project';
-import LoadingComponent from 'components/utils/LoadingComponent';
+import Loading from 'components/utils/Loading';
 
 const FlexRow = styled.div`
   display: flex;
@@ -73,14 +73,12 @@ const Content = styled(FlexColumn)`
 
 const Projects = () => {
   const dispatch = useDispatch();
-  const { projects, projectCount, error, loading } = useSelector(
-    ({ listProjects, loading }) => ({
-      projects: listProjects.projects,
-      projectCount: listProjects.projectCount,
-      error: listProjects.error,
-      loading: loading['listProjects/LIST_PROJECT'],
-    }),
-  );
+  const { projects, projectCount, error, loading } = useSelector(({ listProjects, loading }) => ({
+    projects: listProjects.projects,
+    projectCount: listProjects.projectCount,
+    error: listProjects.error,
+    loading: loading['listProjects/LIST_PROJECT'],
+  }));
   useEffect(() => {
     dispatch(listProject(''));
   }, [dispatch]);
@@ -93,18 +91,7 @@ const Projects = () => {
           <BsArrowRight />
         </More>
       </Header>
-      <Content>
-        {error ? (
-          <div>Error</div>
-        ) : loading ? (
-          <LoadingComponent />
-        ) : (
-          projects &&
-          projects
-            .slice(0, 2)
-            .map((project) => <Project key={project._id} project={project} />)
-        )}
-      </Content>
+      <Content>{error ? <div>Error</div> : loading ? <Loading /> : projects && projects.slice(0, 2).map((project) => <Project key={project._id} project={project} />)}</Content>
     </Wrapper>
   );
 };

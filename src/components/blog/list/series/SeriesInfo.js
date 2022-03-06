@@ -27,7 +27,7 @@ const Text = styled.div`
 const SeriesInfo = ({ seriesCount }) => {
   return (
     <Wrapper>
-      <Count>{`${seriesCount}`}</Count>
+      <Count>{seriesCount}</Count>
       <Text>Series</Text>
     </Wrapper>
   );

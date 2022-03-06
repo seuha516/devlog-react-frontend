@@ -24,7 +24,7 @@ const TagWrapper = styled(Link)`
     css`
       background-color: gray;
     `}
-  transition: all 0.3s linear;
+  transition: all 0.2s linear;
   &:hover {
     box-shadow: 1px 1px 1px 1px black;
   }
@@ -52,7 +52,7 @@ const Tags = ({ tags, location, setPage }) => {
     <Wrapper>
       {tags.map((tag) => (
         <TagWrapper
-          key={tag.name}
+          key={tag._id}
           to={`/blog/list?${makeQueryString(tag.name)}`}
           active={nowTag === tag.name ? 'on' : 'off'}
           onClick={() => setPage(1)}

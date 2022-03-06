@@ -118,29 +118,19 @@ const TagsText = styled.div`
 const Project = ({ project }) => {
   return (
     <Wrapper to={`/project/read/${project._id}`}>
-      <Thumbnail
-        src={
-          project.thumbnail === ''
-            ? 'images/Project/Default.png'
-            : `${process.env.REACT_APP_API_URL}/get/${project.thumbnail}`
-        }
-      />
+      <Thumbnail src={project.thumbnail === '' ? 'images/Project/Default.png' : `${process.env.REACT_APP_API_IMAGE}/${project.thumbnail}`} />
       <TextWrapper>
         <Title>{project.title}</Title>
         <Tags>
           {project.tags.map((tag, index) => {
             if (index < 3) {
               return (
-                <Tag key={tag.tag} style={{ color: tag.color }}>
-                  {`#${tag.tag}`}
+                <Tag key={tag._id} style={{ color: tag.color }}>
+                  {`#${tag.name}`}
                 </Tag>
               );
             } else if (index === 3) {
-              return (
-                <TagsText key={tag.tag}>
-                  {` + ${project.tags.length - 3}`}
-                </TagsText>
-              );
+              return <TagsText key={tag._id}>{` + ${project.tags.length - 3}`}</TagsText>;
             } else return null;
           })}
         </Tags>

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BsArrowRight } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import LoadingComponent from 'components/utils/LoadingComponent';
+import Loading from 'components/utils/Loading';
 import TagItem from './TagItem';
 
 const FlexRow = styled.div`
@@ -90,20 +90,7 @@ const Tags = () => {
           <BsArrowRight />
         </More>
       </Header>
-      <Content>
-        {error ? (
-          <div>Error</div>
-        ) : loading ? (
-          <LoadingComponent />
-        ) : (
-          <TagsWrapper>
-            {tags &&
-              tags
-                .slice(0, 8)
-                .map((item) => <TagItem key={item.name} tag={item} />)}
-          </TagsWrapper>
-        )}
-      </Content>
+      <Content>{error ? <div>Error</div> : loading ? <Loading /> : <TagsWrapper>{tags && tags.slice(0, 8).map((i) => <TagItem key={i.name} tag={i} />)}</TagsWrapper>}</Content>
     </Wrapper>
   );
 };

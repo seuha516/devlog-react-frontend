@@ -73,7 +73,7 @@ const Images = ({ images }) => {
         {images.map((item) => (
           <Image
             key={item}
-            src={`${process.env.REACT_APP_API_URL}/get/${item}`}
+            src={`${process.env.REACT_APP_API_IMAGE}/${item}`}
             alt="projectImage"
             onClick={() => {
               onClick(item);
@@ -84,7 +84,7 @@ const Images = ({ images }) => {
       {state && (
         <PopupBackground onClick={() => setState(null)}>
           <PopupImage
-            src={`${process.env.REACT_APP_API_URL}/get/${state}`}
+            src={`${process.env.REACT_APP_API_IMAGE}/${state}`}
             alt="PopupImage"
           />
         </PopupBackground>

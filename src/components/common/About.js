@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
-
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
+import styled from 'styled-components';
 
 const FlexRow = styled.div`
   display: flex;
@@ -15,7 +14,6 @@ const FlexColumn = styled.div`
   align-items: center;
   justify-content: center;
 `;
-//About
 const Background = styled.div`
   width: 100%;
   height: 100%;
@@ -30,8 +28,10 @@ const Wrapper = styled(FlexColumn)`
   height: 100%;
   margin-top: 50px;
   padding: 0px 20px;
+  @media all and (max-width: 700px) {
+    padding: 0px 10px;
+  }
 `;
-//BackgroundBlock
 const BackgroundWrapper = styled(FlexColumn)`
   width: 100%;
   justify-content: flex-start;
@@ -51,6 +51,9 @@ const BackgroundImg = styled.img`
   object-fit: cover;
   object-position: 50% ${(props) => props.defaultY};
   z-index: ${(props) => props.zIndex};
+  @media all and (max-width: 700px) {
+    width: calc(min(100%, 1200px) - 20px);
+  }
 `;
 const FakeImg = styled.div`
   width: 100px;
@@ -64,14 +67,16 @@ const NextButton = styled(FlexRow)`
   position: absolute;
   margin-top: clamp(150px, calc(200px - 7.5vw), 175px);
   margin-left: ${(props) =>
-    props.position === 'left'
-      ? '0'
-      : 'calc(min(100%, 1200px) - 40px - clamp(30px, 9vw, 60px))'};
-  z-index: 6;
+    props.position === 'left' ? '0' : 'calc(min(100%, 1200px) - 40px - clamp(30px, 9vw, 60px))'};
+  z-index: 20;
   cursor: pointer;
   svg {
     width: 50px;
     height: 50px;
+  }
+  @media all and (max-width: 700px) {
+    margin-left: ${(props) =>
+      props.position === 'left' ? '0' : 'calc(min(100%, 1200px) - 20px - clamp(30px, 9vw, 60px))'};
   }
 `;
 const TextWrapper = styled.div`
@@ -86,7 +91,6 @@ const Text = styled.div`
   align-self: flex-start;
   margin: 30px;
 `;
-//InfoBlock
 const InfoWrapper = styled(FlexRow)`
   width: 100%;
   height: 100%;
@@ -107,11 +111,14 @@ const ProfileImage = styled.img`
   -webkit-user-select: none;
   -khtml-user-select: none;
   user-select: none;
+  @media all and (max-width: 350px) {
+    width: 230px;
+  }
 `;
 const InfoText = styled(FlexColumn)`
   width: 253px;
   height: 100%;
-  margin: 40px 20px;
+  margin: 25px 20px;
   color: black;
   align-items: flex-start;
 `;
@@ -124,8 +131,11 @@ const Information = styled.div`
   font-size: 20px;
   font-family: 'Lato', sans-serif;
   line-height: 32px;
+  @media all and (max-width: 335px) {
+    letter-spacing: -0.3px;
+    font-size: 18px;
+  }
 `;
-//LinkBlock
 const LinkWrapper = styled(FlexRow)`
   width: 100%;
   height: 100%;
@@ -152,24 +162,7 @@ const LinkIcon = styled.img`
     box-shadow: 3px 3px 7px;
   }
 `;
-//SkillBlock
-const SkillWrapper = styled(FlexRow)`
-  display: none;
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  margin-bottom: 50px;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  background-color: #e0f8ff;
-  box-shadow: 2px 2px 3px 2px;
-`;
-const Skill = styled.img`
-  width: 150px;
-  height: 150px;
-`;
 
-//데이터
 const BackgroundImage = [
   { img: '/images/About/Back/Back1.jpg', y: '77.5%' },
   { img: '/images/About/Back/Back2.jpg', y: '62.5%' },
@@ -202,50 +195,7 @@ const LinkItem = [
     link: 'https://codeforces.com/profile/seuha516',
   },
 ];
-const SkillItem = [
-  {
-    name: 'Html',
-    img: 'images/About/Skill/Html.png',
-    level: 'Intermediate',
-  },
-  {
-    name: 'Css',
-    img: 'images/About/Skill/Css.png',
-    level: 'Intermediate',
-  },
-  {
-    name: 'Javascript',
-    img: 'images/About/Skill/Js.png',
-    level: 'Intermediate',
-  },
-  {
-    name: 'Scss',
-    img: 'images/About/Skill/Sass.png',
-    level: 'Intermediate',
-  },
-  {
-    name: 'React',
-    img: 'images/About/Skill/React.png',
-    level: 'Intermediate',
-  },
-  {
-    name: 'Express',
-    img: 'images/About/Skill/Express.png',
-    level: 'Intermediate',
-  },
-  {
-    name: 'Koa',
-    img: 'images/About/Skill/Koa.png',
-    level: 'Intermediate',
-  },
-  {
-    name: 'Aws',
-    img: 'images/About/Skill/Aws.png',
-    level: 'Tried',
-  },
-];
 
-//메인 컴포넌트
 const About = () => {
   useEffect(() => {
     const htmlTitle = document.querySelector('title');
@@ -260,12 +210,10 @@ const About = () => {
         <BackgroundBlock />
         <InfoBlock />
         <LinkBlock />
-        <SkillBlock />
       </Wrapper>
     </Background>
   );
 };
-//서브 컴포넌트
 const BackgroundBlock = () => {
   const ImageLoading = useRef(null);
   const FrontImage = useRef(null);
@@ -274,10 +222,7 @@ const BackgroundBlock = () => {
     if (ImageLoading.current) return;
     ImageLoading.current = true;
     const movePage = (page, add) => {
-      return (
-        (page + (add === 'left' ? -1 : 1) + BackgroundImage.length) %
-        BackgroundImage.length
-      );
+      return (page + (add === 'left' ? -1 : 1) + BackgroundImage.length) % BackgroundImage.length;
     };
     const sleep = (t) => {
       return new Promise((resolve) => setTimeout(resolve, t));
@@ -291,8 +236,8 @@ const BackgroundBlock = () => {
     });
     await sleep(600);
     setBackgroundNumber([nextImage, nextImage]);
-    FrontImage.current.opacity = 1;
-    ImageLoading.current = false;
+    if (FrontImage.current) FrontImage.current.opacity = 1;
+    if (ImageLoading.current) ImageLoading.current = false;
   };
   return (
     <BackgroundWrapper>
@@ -309,11 +254,13 @@ const BackgroundBlock = () => {
         defaultY={BackgroundImage[backgroundNumber[1]].y}
         zIndex="1"
       />
+      <BackgroundImg style={{ display: 'none' }} src={BackgroundImage[2].img} alt="Background" />
+      <BackgroundImg style={{ display: 'none' }} src={BackgroundImage[3].img} alt="Background" />
       <FakeImg />
-      <NextButton position="left" onClick={() => NextPage('left')}>
+      <NextButton position="left" onClick={() => NextPage(-1)}>
         <MdKeyboardArrowLeft />
       </NextButton>
-      <NextButton position="right" onClick={() => NextPage('right')}>
+      <NextButton position="right" onClick={() => NextPage(1)}>
         <MdKeyboardArrowRight />
       </NextButton>
       <TextWrapper>
@@ -352,25 +299,11 @@ const LinkBlock = () => {
   return (
     <LinkWrapper>
       {LinkItem.map((item) => (
-        <a
-          key={item.link}
-          href={item.link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a key={item.link} href={item.link} target="_blank" rel="noopener noreferrer">
           <LinkIcon src={item.img} alt={item.link} />
         </a>
       ))}
     </LinkWrapper>
-  );
-};
-const SkillBlock = () => {
-  return (
-    <SkillWrapper>
-      {SkillItem.map((item) => (
-        <Skill key={item.name} src={item.img} alt={item.name} />
-      ))}
-    </SkillWrapper>
   );
 };
 

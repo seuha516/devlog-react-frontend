@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { AiOutlineFileAdd, AiOutlineRollback } from 'react-icons/ai';
 import { updatePost, writePost } from 'modules/blog/writeBlog';
-import LoadingComponent from 'components/utils/LoadingComponent';
+import Loading from 'components/utils/Loading';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -50,6 +50,13 @@ const WriteButtons = ({ history }) => {
   const user = useSelector((store) => store.user.user);
   const [loading, setLoading] = useState(false);
 
+  const serialize = (p) => {
+    delete p.originalId;
+    delete p.post;
+    delete p.error;
+    return p;
+  };
+
   const onPublish = () => {
     if (!user) {
       alert('로그인 중이 아닙니다.');
@@ -63,31 +70,15 @@ const WriteButtons = ({ history }) => {
       alert('부제목을 입력해 주세요.');
       return;
     }
-    if (post.originalPostId) {
+    if (post.originalId) {
       dispatch(
         updatePost({
-          id: post.originalPostId,
-          post: {
-            title: post.title,
-            subTitle: post.subTitle,
-            body: post.body,
-            thumbnail: post.thumbnail,
-            series: post.series,
-            tags: post.tags,
-          },
+          id: post.originalId,
+          post: serialize(post),
         }),
       );
     } else {
-      dispatch(
-        writePost({
-          title: post.title,
-          subTitle: post.subTitle,
-          body: post.body,
-          thumbnail: post.thumbnail,
-          series: post.series,
-          tags: post.tags,
-        }),
-      );
+      dispatch(writePost(serialize(post)));
     }
     setLoading(true);
   };
@@ -107,7 +98,7 @@ const WriteButtons = ({ history }) => {
   if (loading)
     return (
       <div style={{ width: '50px', height: '50px' }}>
-        <LoadingComponent />
+        <Loading />
       </div>
     );
   return (

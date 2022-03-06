@@ -13,16 +13,17 @@ const Background = styled.div`
   align-items: center;
   background: #232323;
   background-image: url('/images/Common/Background6.png');
+  padding: 35px 0;
 `;
 const LoginWrapper = styled.form`
-  width: 360px;
-  height: clamp(360px, calc(100vh - 200px), 480px);
-  margin: 20px 0;
-  background-color: #00000094;
+  width: min(100%, 360px);
+  min-height: 480px;
+  background-color: #000000b2;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  padding: 0 15px;
 `;
 const LoginText = styled.div`
   text-align: center;
@@ -32,13 +33,14 @@ const LoginText = styled.div`
   color: #fdfdfde6;
 `;
 const LoginInputWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
 `;
 const LoginInput = styled.input`
-  width: 300px;
+  width: min(100%, 300px);
   height: 60px;
   font-size: 25px;
   padding: 10px 20px;
@@ -107,15 +109,11 @@ const Login = ({ history }) => {
       }
     }
   }, [history, user]);
-  if (loading) {
-    return (
-      <Background>
+  return (
+    <Background>
+      {loading ? (
         <Loading />
-      </Background>
-    );
-  } else {
-    return (
-      <Background>
+      ) : (
         <LoginWrapper onSubmit={onSubmit}>
           <LoginText>
             Devlog
@@ -123,26 +121,14 @@ const Login = ({ history }) => {
             Admin Login
           </LoginText>
           <LoginInputWrapper>
-            <LoginInput
-              type="text"
-              name="username"
-              value={state.username}
-              placeholder="ID"
-              onChange={onChange}
-            />
-            <LoginInput
-              type="password"
-              name="password"
-              value={state.password}
-              placeholder="Password"
-              onChange={onChange}
-            />
+            <LoginInput type="text" name="username" value={state.username} placeholder="ID" onChange={onChange} />
+            <LoginInput type="password" name="password" value={state.password} placeholder="Password" onChange={onChange} />
           </LoginInputWrapper>
           <LoginButton onClick={onSubmit}>Login</LoginButton>
         </LoginWrapper>
-      </Background>
-    );
-  }
+      )}
+    </Background>
+  );
 };
 
 export default Login;

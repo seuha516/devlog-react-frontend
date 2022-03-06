@@ -145,7 +145,7 @@ const Images = () => {
         {images.map((item) => (
           <Image
             key={item}
-            src={`${process.env.REACT_APP_API_URL}/get/${item}`}
+            src={`${process.env.REACT_APP_API_IMAGE}/${item}`}
             alt="projectImage"
             onClick={() => removeImage(item)}
           />

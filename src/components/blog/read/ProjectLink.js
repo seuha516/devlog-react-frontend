@@ -1,6 +1,6 @@
 import React from 'react';
-import { AiOutlineFundProjectionScreen } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import { AiOutlineFundProjectionScreen } from 'react-icons/ai';
 import styled from 'styled-components';
 
 const FlexRow = styled.div`
@@ -43,12 +43,12 @@ const ProjectLink = ({ project }) => {
       <FlexRow>
         <AiOutlineFundProjectionScreen />
         <Text>Project: </Text>
-        <LinkBlock to={`/project/read/${project.id}`}>{project.name}</LinkBlock>
+        <LinkBlock to={`/project/read/${project}`}>{project}</LinkBlock>
       </FlexRow>
       <FlexRow>
         <LinkToSeries
-          to={`/blog/list?project=${project.name}`}
-        >{`${project.name} 관련 포스트 보기`}</LinkToSeries>
+          to={`/blog/list?project=${project}`}
+        >{`${project} 관련 포스트 보기`}</LinkToSeries>
       </FlexRow>
     </>
   );

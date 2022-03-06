@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ChromePicker } from 'react-color';
+import { IoIosColorPalette } from 'react-icons/io';
 import styled from 'styled-components';
 import { changeField } from 'modules/blog/writeBlog';
-import { IoIosColorPalette } from 'react-icons/io';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -53,13 +54,6 @@ const TagForm = styled.form`
     }
   }
 `;
-const Color = styled.input`
-  width: 100px;
-  height: 38px;
-  font-size: 18px;
-  letter-spacing: 1px;
-  padding: 0 10px;
-`;
 const Tag = styled.div`
   margin-right: 0.5rem;
   color: gray;
@@ -76,50 +70,48 @@ const TagListBlock = styled.div`
 `;
 
 const TagBox = () => {
+  const { tags, tagList } = useSelector(({ writeBlog, catalogBlog }) => ({
+    tags: writeBlog.tags,
+    tagList: catalogBlog.tags,
+  }));
   const dispatch = useDispatch();
-  const tags = useSelector((state) => state.writeBlog.tags);
-  const tagList = useSelector((store) => store.getlistBlog.tags);
 
   const [input, setInput] = useState('');
   const [color, setColor] = useState('#ffffff');
-  const [localTags, setLocalTags] = useState(tags);
 
   const insertTag = useCallback(
-    (tag) => {
-      if (tag === '') {
+    (value) => {
+      if (value === '') {
         alert('태그를 입력해 주세요.');
         return;
       }
-      for (let i = 0; i < localTags.length; i++) {
-        if (localTags[i].tag === tag) {
+      for (let i = 0; i < tags.length; i++) {
+        if (tags[i].name === value) {
           alert('이미 있는 태그입니다.');
           return;
         }
       }
-      const nextTags = [...localTags, { tag: tag, color: color }];
-      setLocalTags(nextTags);
+      const nextTags = [...tags, { name: value, color: color }];
+      dispatch(changeField({ key: 'tags', value: nextTags }));
     },
-    [localTags, color],
+    [color, dispatch, tags],
   );
   const onRemove = useCallback(
-    (tag) => {
-      const nextTags = localTags.filter((t) => t !== tag);
-      setLocalTags(nextTags);
+    (value) => {
+      const nextTags = tags.filter((i) => i !== value);
+      dispatch(changeField({ key: 'tags', value: nextTags }));
     },
-    [localTags],
+    [dispatch, tags],
   );
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
       insertTag(input.trim());
       setInput('');
+      setColor('#ffffff');
     },
     [input, insertTag],
   );
-
-  useEffect(() => {
-    dispatch(changeField({ key: 'tags', value: localTags }));
-  }, [dispatch, localTags]);
 
   return (
     <Wrapper>
@@ -144,22 +136,22 @@ const TagBox = () => {
             marginRight: '5px',
           }}
         />
-        <Color value={color} onChange={(e) => setColor(e.target.value)} />
+        <ChromePicker disableAlpha color={color} onChange={(c) => setColor(c.hex)} />
       </FlexBox>
-      <TagList tags={localTags} onRemove={onRemove} />
+      <TagList tags={tags} onRemove={onRemove} />
     </Wrapper>
   );
 };
 const TagList = React.memo(({ tags, onRemove }) => (
   <TagListBlock>
     {tags.map((tag) => (
-      <TagItem key={tag.tag} tag={tag} onRemove={onRemove} />
+      <TagItem key={tag.name} tag={tag} onRemove={onRemove} />
     ))}
   </TagListBlock>
 ));
 const TagItem = React.memo(({ tag, onRemove }) => (
   <Tag onClick={() => onRemove(tag)} style={{ color: tag.color }}>
-    #{tag.tag}
+    #{tag.name}
   </Tag>
 ));
 

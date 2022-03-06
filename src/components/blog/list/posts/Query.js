@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import qs from 'qs';
-import styled from 'styled-components';
 import { AiOutlineLeftCircle, AiOutlineRightCircle } from 'react-icons/ai';
 import { BiTimeFive, BiCodeAlt } from 'react-icons/bi';
 import { BsHash } from 'react-icons/bs';
+import styled from 'styled-components';
+import qs from 'qs';
 
 const FlexBox = styled.div`
   display: flex;
@@ -32,6 +32,7 @@ const Tag = styled(Link)`
     margin: 0 0 2px -7px;
     color: black;
   }
+  transition: all 0.15s linear;
   &:hover {
     background-color: #fc8e8e;
   }
@@ -46,6 +47,7 @@ const Project = styled(Link)`
   border-radius: 3px;
   padding: 5px;
   color: #464646;
+  transition: all 0.15s linear;
   svg {
     width: 35px;
     height: 35px;
@@ -136,32 +138,22 @@ const Query = ({ location, setPage }) => {
         </Project>
       )}
       <Sort>
-        <SetPage
-          style={{ justifyContent: 'flex-start' }}
-          onClick={() => setPage(0)}
-        >
+        <SetPage style={{ justifyContent: 'flex-start' }} onClick={() => setPage(0)}>
           <AiOutlineLeftCircle />
           <SetPageText>Tags</SetPageText>
         </SetPage>
         {sort === '1' ? (
-          <SortItem
-            to={`/blog/list?${makeQueryString({ tag, project, sort: '-1' })}`}
-          >
+          <SortItem to={`/blog/list?${makeQueryString({ tag, project, sort: '-1' })}`}>
             <BiTimeFive />
             최신순으로 보기
           </SortItem>
         ) : (
-          <SortItem
-            to={`/blog/list?${makeQueryString({ tag, project, sort: '1' })}`}
-          >
+          <SortItem to={`/blog/list?${makeQueryString({ tag, project, sort: '1' })}`}>
             <BiTimeFive />
             작성순으로 보기
           </SortItem>
         )}
-        <SetPage
-          style={{ justifyContent: 'flex-end' }}
-          onClick={() => setPage(2)}
-        >
+        <SetPage style={{ justifyContent: 'flex-end' }} onClick={() => setPage(2)}>
           <SetPageText>Series</SetPageText>
           <AiOutlineRightCircle />
         </SetPage>

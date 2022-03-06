@@ -34,7 +34,7 @@ const SeriesLink = ({ series }) => {
     <FlexRow>
       <BsBook />
       <Text>Series: </Text>
-      <LinkBlock to={`/blog/series/${series}`}>
+      <LinkBlock to={`/blog/series?series=${series}`}>
         <em>{`'${series}'`}</em> 의 다른 글 보기
       </LinkBlock>
     </FlexRow>

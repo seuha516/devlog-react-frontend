@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { BiTimeFive, BiArrowBack } from 'react-icons/bi';
+import styled from 'styled-components';
 import qs from 'qs';
+
 import Error from 'components/utils/Error';
 import Loading from 'components/utils/Loading';
 import NotFound from 'components/utils/NotFound';
-import { seriesPost } from 'modules/blog/seriesBlog';
-import styled from 'styled-components';
-import Title from '../series/Title';
-import ListButton from '../series/ListButton';
 import Post from '../series/Post';
-import { BiTimeFive } from 'react-icons/bi';
-import { Link } from 'react-router-dom';
+import PageControl from '../series/PageControl';
+import { listPost } from 'modules/blog/listBlog';
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,6 +26,12 @@ const Wrapper = styled.div`
   -webkit-user-select: none;
   -khtml-user-select: none;
   user-select: none;
+  @media all and (max-width: 700px) {
+    padding: 50px 15px;
+  }
+  @media all and (max-width: 450px) {
+    padding: 50px 7.5px;
+  }
 `;
 const ContentsWrapper = styled.div`
   display: flex;
@@ -40,7 +46,8 @@ const PostWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  background: #949494;
+  min-height: 500px;
+  background: #9d9d9dde;
   justify-content: center;
   flex-wrap: wrap;
   margin: 45px 0 30px 0;
@@ -65,43 +72,74 @@ const SortItem = styled(Link)`
     font-weight: 600;
   }
 `;
+const TitleWrapper = styled.div`
+  align-self: flex-start;
+  background: #9d9d9dde;
+  max-width: 800px;
+  padding: 15px;
+  font-size: 60px;
+  font-family: 'Nanum Pen Script', cursive;
+`;
+const ListButtonWrapper = styled(Link)`
+  width: 200px;
+  height: 50px;
+  margin-bottom: 25px;
+  align-self: flex-start;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: white;
+  text-shadow: 2px 2px 2px black;
+  font-size: 28px;
+  font-family: 'Rubik', sans-serif;
+  svg {
+    margin-right: 10px;
+  }
+`;
 
-const Series = ({ match, location }) => {
+const Series = ({ location }) => {
   const dispatch = useDispatch();
-  const { posts, error, loading } = useSelector(({ seriesBlog, loading }) => ({
-    posts: seriesBlog.posts,
-    error: seriesBlog.error,
-    loading: loading['seriesBlog/SERIES_POST'],
+  const { posts, postCount, error, loading } = useSelector(({ listBlog, loading }) => ({
+    posts: listBlog.posts,
+    postCount: listBlog.postCount,
+    error: listBlog.error,
+    loading: loading['listBlog/LIST_POST'],
   }));
-  const { name } = match.params;
-  const { sort } = qs.parse(location.search, {
+  const { series, sort, page } = qs.parse(location.search, {
     ignoreQueryPrefix: true,
   });
+  const makeQueryString = (sort) => qs.stringify({ series, sort: sort, page: 1 });
+
   useEffect(() => {
     const htmlTitle = document.querySelector('title');
-    htmlTitle.innerHTML = `Series: ${name}`;
+    htmlTitle.innerHTML = `Series: ${series}`;
+    dispatch(listPost(location.search));
     return () => {
       htmlTitle.innerHTML = 'Devlog';
     };
-  }, [name]);
-  useEffect(() => {
-    dispatch(seriesPost({ series: name, query: location.search }));
-  }, [dispatch, name, location.search]);
+  }, [dispatch, location.search, series]);
 
   if (error) {
     return <Error />;
   } else if (loading || !posts) {
-    return <Loading />;
+    return (
+      <div style={{ width: '100%', height: 'calc(100vh - 62px)' }}>
+        <Loading />
+      </div>
+    );
   } else if (posts.length === 0) {
     return <NotFound />;
   } else {
     return (
       <Wrapper>
         <ContentsWrapper>
-          <ListButton />
-          <Title name={name} />
+          <ListButtonWrapper to="/blog/list">
+            <BiArrowBack />
+            List
+          </ListButtonWrapper>
+          <TitleWrapper>{series}</TitleWrapper>
           <PostWrapper>
-            <SortItem to={`/blog/series/${name}?sort=${sort === '1' ? -1 : 1}`}>
+            <SortItem to={`/blog/series?${makeQueryString(sort === '1' ? -1 : 1)}`}>
               <BiTimeFive />
               {sort === '-1' ? '작성순으로 보기' : '최신순으로 보기'}
             </SortItem>
@@ -109,6 +147,7 @@ const Series = ({ match, location }) => {
               <Post key={post._id} post={post} index={index} />
             ))}
           </PostWrapper>
+          <PageControl location={location} postCount={postCount} />
         </ContentsWrapper>
       </Wrapper>
     );

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { AiOutlineFileAdd, AiOutlineRollback } from 'react-icons/ai';
 import { writeProject, updateProject } from 'modules/projects/writeProjects';
-import LoadingComponent from 'components/utils/LoadingComponent';
+import Loading from 'components/utils/Loading';
 
 const Wrapper = styled.div`
   width: 50%;
@@ -121,7 +121,7 @@ const WriteButton = ({ history }) => {
   if (loading)
     return (
       <div style={{ width: '50px', height: '50px' }}>
-        <LoadingComponent />
+        <Loading />
       </div>
     );
   return (

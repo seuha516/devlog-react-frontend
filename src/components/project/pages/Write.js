@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { initialize } from 'modules/projects/writeProjects';
+import { initWriteProject } from 'modules/projects/writeProjects';
 
 //Components
 import Header from 'components/project/write/Header';
@@ -47,7 +47,7 @@ const Write = () => {
   }, []);
   useEffect(() => {
     return () => {
-      dispatch(initialize());
+      dispatch(initWriteProject());
     };
   }, [dispatch]);
   return (

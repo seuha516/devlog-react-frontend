@@ -1,17 +1,11 @@
 import { createAction, handleActions } from 'redux-actions';
 import { call, takeLatest } from 'redux-saga/effects';
-import createRequestSaga, {
-  createRequestActionTypes,
-} from 'lib/createRequestSaga';
+import createRequestSaga, { createRequestActionTypes } from 'lib/createRequestSaga';
 import * as userAPI from 'lib/api/user';
 
 const SET_USER = 'user/SET_USER';
-const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] = createRequestActionTypes(
-  'user/LOGIN',
-);
-const [CHECK, CHECK_SUCCESS, CHECK_FAILURE] = createRequestActionTypes(
-  'user/CHECK',
-);
+const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] = createRequestActionTypes('user/LOGIN');
+const [CHECK, CHECK_SUCCESS, CHECK_FAILURE] = createRequestActionTypes('user/CHECK');
 const LOGOUT = 'user/LOGOUT';
 
 export const setUser = createAction(SET_USER, (user) => user);
@@ -22,7 +16,6 @@ export const login = createAction(LOGIN, ({ username, password }) => ({
 export const check = createAction(CHECK);
 export const logout = createAction(LOGOUT);
 
-//사가
 const loginSaga = createRequestSaga(LOGIN, userAPI.login);
 const checkSaga = createRequestSaga(CHECK, userAPI.check);
 function checkFailureSaga() {
@@ -57,22 +50,21 @@ const user = handleActions(
       user,
     }),
     [LOGIN_SUCCESS]: (state, { payload: user }) => {
-      alert(`Hello, ${user.username}!`);
       return { user };
     },
     [LOGIN_FAILURE]: (state, { payload: error }) => {
-      alert(`로그인에 실패했습니다.`);
+      alert(error.response.data.message);
       return state;
     },
-    [CHECK_SUCCESS]: (state, { payload: username }) => {
+    [CHECK_SUCCESS]: (state) => {
       return state;
     },
-    [CHECK_FAILURE]: (state, { payload: error }) => {
+    [CHECK_FAILURE]: () => {
       return { user: null };
     },
-    [LOGOUT]: (state) => ({
-      user: null,
-    }),
+    [LOGOUT]: () => {
+      return { user: null };
+    },
   },
   initialState,
 );

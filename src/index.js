@@ -8,7 +8,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootReducer, { rootSaga } from 'modules';
 import { setUser, check } from 'modules/user';
-import { addCounter } from 'modules/counter';
 import 'index.scss';
 
 import Header from 'components/utils/Header';
@@ -17,7 +16,6 @@ import About from 'components/common/About';
 import Project from 'components/common/Project';
 import Blog from 'components/common/Blog';
 import Login from 'components/common/Login';
-import Visitor from 'components/common/Visitor';
 import NotFound from 'components/utils/NotFound';
 import Footer from 'components/utils/Footer';
 import Buttons from 'components/utils/Buttons';
@@ -36,7 +34,6 @@ function loadUser() {
 }
 sagaMiddleware.run(rootSaga);
 loadUser();
-store.dispatch(addCounter());
 document.getElementById('root').setAttribute('spellcheck', 'false');
 
 ReactDOM.render(
@@ -49,7 +46,6 @@ ReactDOM.render(
         <Route path="/project" component={Project} />
         <Route path="/blog" component={Blog} />
         <Route path="/login" component={Login} />
-        <Route path="/visitor" component={Visitor} />
         <Route component={NotFound} />
       </Switch>
       <Buttons />

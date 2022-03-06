@@ -56,11 +56,11 @@ const PageControlNumber = styled(Link)`
 
 const PageControl = ({ location, postCount }) => {
   const lastPage = Math.max(Math.floor((postCount + 5) / 6), 1);
-  const { page, tag, project, sort } = qs.parse(location.search, {
+  const { page, series, sort } = qs.parse(location.search, {
     ignoreQueryPrefix: true,
   });
   const nowPage = parseInt(page || '1');
-  const makeQueryString = (targetPage) => qs.stringify({ page: targetPage, tag, project, sort });
+  const makeQueryString = (targetPage) => qs.stringify({ page: targetPage, series, sort });
   const setList = (start, end) => {
     let ret = [];
     if (postCount === 0) {
@@ -79,13 +79,13 @@ const PageControl = ({ location, postCount }) => {
     <PageControlWrapper>
       {nowPage > 1 && postCount > 0 && (
         <PageControlButton
-          to={`/blog/list?${makeQueryString(1)}`}
+          to={`/blog/series/list?${makeQueryString(1)}`}
           style={{ marginRight: '5px' }}
         >{`<<`}</PageControlButton>
       )}
       {nowPage > 1 && postCount > 0 && (
         <PageControlButton
-          to={`/blog/list?${makeQueryString(nowPage - 1)}`}
+          to={`/blog/series/list?${makeQueryString(nowPage - 1)}`}
           style={{ marginRight: '5px' }}
         >{`<`}</PageControlButton>
       )}
@@ -93,7 +93,7 @@ const PageControl = ({ location, postCount }) => {
         {setList(nowPage - 2, nowPage + 2).map((n) => (
           <PageControlNumber
             key={n}
-            to={`/blog/list?${makeQueryString(n)}`}
+            to={`/blog/series/list?${makeQueryString(n)}`}
             style={n === nowPage ? { background: 'black', color: 'white' } : {}}
           >
             {n}
@@ -102,13 +102,13 @@ const PageControl = ({ location, postCount }) => {
       </PageControlNumberWrapper>
       {nowPage < lastPage && postCount > 0 && (
         <PageControlButton
-          to={`/blog/list?${makeQueryString(nowPage + 1)}`}
+          to={`/blog/series/list?${makeQueryString(nowPage + 1)}`}
           style={{ marginLeft: '5px' }}
         >{`>`}</PageControlButton>
       )}
       {nowPage < lastPage && postCount > 0 && (
         <PageControlButton
-          to={`/blog/list?${makeQueryString(lastPage)}`}
+          to={`/blog/series/list?${makeQueryString(lastPage)}`}
           style={{ marginLeft: '5px' }}
         >{`>>`}</PageControlButton>
       )}

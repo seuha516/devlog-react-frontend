@@ -20,7 +20,7 @@ const Thumbnail = ({ thumbnail }) => {
         src={
           thumbnail === ''
             ? '/images/Project/Default.png'
-            : `${process.env.REACT_APP_API_URL}/get/${thumbnail}`
+            : `${process.env.REACT_APP_API_IMAGE}/${thumbnail}`
         }
         alt="thumbnail"
       />

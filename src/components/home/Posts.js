@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsArrowRight } from 'react-icons/bs';
 import { listPost } from 'modules/blog/listBlog';
-import LoadingComponent from 'components/utils/LoadingComponent';
+import Loading from 'components/utils/Loading';
 import Post from 'components/home/Post';
 
 const FlexRow = styled.div`
@@ -70,14 +70,12 @@ const Content = styled(FlexColumn)`
 
 const Posts = () => {
   const dispatch = useDispatch();
-  const { posts, postCount, error, loading } = useSelector(
-    ({ listBlog, loading }) => ({
-      posts: listBlog.posts,
-      postCount: listBlog.postCount,
-      error: listBlog.error,
-      loading: loading['listBlog/LIST_POST'],
-    }),
-  );
+  const { posts, postCount, error, loading } = useSelector(({ listBlog, loading }) => ({
+    posts: listBlog.posts,
+    postCount: listBlog.postCount,
+    error: listBlog.error,
+    loading: loading['listBlog/LIST_POST'],
+  }));
   useEffect(() => {
     dispatch(listPost(''));
   }, [dispatch]);
@@ -91,16 +89,7 @@ const Posts = () => {
           <BsArrowRight />
         </More>
       </Header>
-      <Content>
-        {error ? (
-          <div>Error</div>
-        ) : loading ? (
-          <LoadingComponent />
-        ) : (
-          posts &&
-          posts.slice(0, 4).map((post) => <Post key={post._id} post={post} />)
-        )}
-      </Content>
+      <Content>{error ? <div>Error</div> : loading ? <Loading /> : posts && posts.slice(0, 4).map((post) => <Post key={post._id} post={post} />)}</Content>
     </Wrapper>
   );
 };

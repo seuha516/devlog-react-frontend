@@ -1,7 +1,7 @@
 import React from 'react';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import axios from 'axios';
 import { changeField } from 'modules/blog/writeBlog';
 
 const FlexBox = styled.div`
@@ -37,23 +37,22 @@ const Input = styled.input`
 `;
 
 const Thumbnail = () => {
-  const dispatch = useDispatch();
   const thumbnail = useSelector((store) => store.writeBlog.thumbnail);
+  const dispatch = useDispatch();
 
   const onChange = async (e) => {
     const thumbnailImage = e.target.files[0];
     const formData = new FormData();
     formData.append('image', thumbnailImage);
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/upload`, formData, {
+      .post(process.env.REACT_APP_API_IMAGE, formData, {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(response.data);
         dispatch(changeField({ key: 'thumbnail', value: response.data }));
       })
       .catch((error) => {
-        console.error('Error:', error);
+        alert('이미지 업로드 실패');
       });
   };
 
@@ -66,7 +65,7 @@ const Thumbnail = () => {
             src={
               thumbnail === ''
                 ? '/images/Project/Default.png'
-                : `${process.env.REACT_APP_API_URL}/get/${thumbnail}`
+                : `${process.env.REACT_APP_API_IMAGE}/${thumbnail}`
             }
             alt="thumbnail"
           />

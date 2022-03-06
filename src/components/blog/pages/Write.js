@@ -6,6 +6,8 @@ import Thumbnail from '../write/Thumbnail';
 import TagBox from '../write/TagBox';
 import WriteButtons from '../write/WriteButtons';
 import Series from '../write/Series';
+import { useDispatch } from 'react-redux';
+import { catalogPost } from 'modules/blog/catalogBlog';
 
 const WriteWrapper = styled.div`
   width: 100%;
@@ -26,9 +28,11 @@ const WriteWrapper = styled.div`
 `;
 
 const Write = () => {
+  const dispatch = useDispatch();
   useEffect(() => {
     const htmlTitle = document.querySelector('title');
     htmlTitle.innerHTML = 'Post Write';
+    dispatch(catalogPost());
     return () => {
       htmlTitle.innerHTML = 'Devlog';
     };

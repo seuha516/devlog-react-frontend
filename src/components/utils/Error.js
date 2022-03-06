@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-
 import { AiOutlineReload } from 'react-icons/ai';
 import { BiArrowBack } from 'react-icons/bi';
+import styled from 'styled-components';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -31,11 +30,15 @@ const Reload = styled.div`
   font-size: 24px;
   margin-bottom: 15px;
   color: #9b9b9b;
-  cursor: pointer;
   svg {
     width: 30px;
     height: 30px;
     margin: 0 10px 1.5px 0;
+  }
+  cursor: pointer;
+  transition: all 0.2s linear;
+  &:hover {
+    color: white;
   }
 `;
 const Home = styled(Link)`
@@ -43,11 +46,15 @@ const Home = styled(Link)`
   align-items: center;
   font-size: 24px;
   color: #9b9b9b;
-  cursor: pointer;
   svg {
     width: 30px;
     height: 30px;
     margin: 0 10px 1.5px 0;
+  }
+  cursor: pointer;
+  transition: all 0.2s linear;
+  &:hover {
+    color: white;
   }
 `;
 

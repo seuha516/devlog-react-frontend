@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { AiFillGithub, AiFillFacebook, AiFillInstagram } from 'react-icons/ai';
 import styled from 'styled-components';
-
-import { AiFillGithub, AiFillFacebook } from 'react-icons/ai';
-import { BsGraphUp } from 'react-icons/bs';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -56,6 +54,7 @@ const Login = styled(Link)`
   color: gray;
   margin-top: 0.5px;
   margin-left: 20px;
+  letter-spacing: -0.5px;
   @media all and (max-width: 1024px) {
     font-size: 15px;
     margin-top: 1.5px;
@@ -63,6 +62,11 @@ const Login = styled(Link)`
   }
   @media all and (max-width: 768px) {
     font-size: 13px;
+  }
+  cursor: pointer;
+  transition: all 0.2s linear;
+  &:hover {
+    color: white;
   }
 `;
 const Icon = styled.a`
@@ -76,33 +80,11 @@ const Icon = styled.a`
   @media all and (max-width: 400px) {
     margin-left: 10px;
   }
-  svg {
-    width: 30px;
-    height: 30px;
-    @media all and (max-width: 1024px) {
-      width: 27px;
-      height: 27px;
-    }
-    @media all and (max-width: 768px) {
-      width: 20px;
-      height: 20px;
-    }
-    @media all and (max-width: 400px) {
-      width: 18px;
-      height: 18px;
-    }
+  @media all and (max-width: 350px) {
+    margin-left: 5px;
   }
-`;
-const VisitorIcon = styled(Link)`
-  margin-left: 20px;
-  @media all and (max-width: 1024px) {
-    margin-left: 18px;
-  }
-  @media all and (max-width: 768px) {
-    margin-left: 15px;
-  }
-  @media all and (max-width: 400px) {
-    margin-left: 10px;
+  @media all and (max-width: 320px) {
+    margin-left: 2px;
   }
   svg {
     width: 30px;
@@ -146,24 +128,14 @@ const Footer = () => {
       <Flexbox>
         <URL>seungha-devlog.com</URL>
         <Flexbox>
-          {user && (
-            <VisitorIcon to="/visitor">
-              <BsGraphUp />
-            </VisitorIcon>
-          )}
-          <Icon
-            href="https://github.com/seuha516"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Icon href="https://github.com/seuha516" target="_blank" rel="noopener noreferrer">
             <AiFillGithub />
           </Icon>
-          <Icon
-            href="https://www.facebook.com/seuha516"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Icon href="https://www.facebook.com/seuha516" target="_blank" rel="noopener noreferrer">
             <AiFillFacebook />
+          </Icon>
+          <Icon href="https://www.instagram.com/jeon.seungha/" target="_blank" rel="noopener noreferrer">
+            <AiFillInstagram />
           </Icon>
         </Flexbox>
       </Flexbox>

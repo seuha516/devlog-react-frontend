@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { BsArrowRight } from 'react-icons/bs';
 
-import LoadingComponent from 'components/utils/LoadingComponent';
+import Loading from 'components/utils/Loading';
 import SeriesItem from './SeriesItem';
 
 const FlexRow = styled.div`
@@ -87,18 +87,7 @@ const Series = () => {
           <BsArrowRight />
         </More>
       </Header>
-      <Content>
-        {error ? (
-          <div>Error</div>
-        ) : loading ? (
-          <LoadingComponent />
-        ) : (
-          series &&
-          series
-            .slice(0, 5)
-            .map((item) => <SeriesItem key={item.name} series={item} />)
-        )}
-      </Content>
+      <Content>{error ? <div>Error</div> : loading ? <Loading /> : series && series.slice(0, 5).map((i) => <SeriesItem key={i.name} series={i} />)}</Content>
     </Wrapper>
   );
 };

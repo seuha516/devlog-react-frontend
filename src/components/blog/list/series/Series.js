@@ -40,7 +40,7 @@ const Series = ({ series }) => {
   return (
     <Wrapper>
       {series.map((item) => (
-        <SeriesWrapper key={item.name} to={`/blog/series/${item.name}`}>
+        <SeriesWrapper key={item.name} to={`/blog/series?series=${item.name}`}>
           <Name>{item.name}</Name>
           <Count>{item.count}</Count>
         </SeriesWrapper>

@@ -6,14 +6,12 @@ import { Quill } from 'react-quill';
 import ImageUploader from 'quill-image-uploader';
 import ImageResize from 'quill-image-resize-module';
 import 'react-quill/dist/quill.snow.css';
-
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
-
 import hljs from 'highlight.js';
 import 'highlight.js/styles/monokai-sublime.css';
 
-import { changeField, initialize } from 'modules/blog/writeBlog';
+import { changeField, initWritePost } from 'modules/blog/writeBlog';
 
 window.katex = katex;
 Quill.register('modules/imageUploader', ImageUploader);
@@ -45,9 +43,6 @@ const QuillWrapper = styled.div`
     min-height: 320px;
     max-height: 450px;
   }
-  .ql-editor.ql-blank::before {
-    left: 15px;
-  }
 `;
 
 const Editor = () => {
@@ -58,51 +53,42 @@ const Editor = () => {
     body: writeBlog.body,
   }));
 
-  const onChangeField = useCallback(
-    (payload) => dispatch(changeField(payload)),
-    [dispatch],
-  );
-
   useEffect(() => {
     return () => {
-      dispatch(initialize());
+      dispatch(initWritePost());
     };
   }, [dispatch]);
 
+  const onChangeField = useCallback((payload) => dispatch(changeField(payload)), [dispatch]);
+
   return (
     <>
-      <TitleBlock onChangeField={onChangeField} title={title} />
-      <SubTitleBlock onChangeField={onChangeField} subTitle={subTitle} />
+      <TitleInput
+        placeholder="Title"
+        onChange={(e) => {
+          onChangeField({ key: 'title', value: e.target.value });
+        }}
+        value={title}
+      />
+      <SubTitleInput
+        placeholder="SubTitle"
+        onChange={(e) => {
+          onChangeField({ key: 'subTitle', value: e.target.value });
+        }}
+        value={subTitle}
+      />
       <BodyBlock onChangeField={onChangeField} body={body} />
     </>
   );
 };
-const TitleBlock = ({ onChangeField, title }) => {
-  const onChangeTitle = (e) => {
-    onChangeField({ key: 'title', value: e.target.value });
-  };
-  return (
-    <TitleInput placeholder="Title" onChange={onChangeTitle} value={title} />
-  );
-};
-const SubTitleBlock = ({ onChangeField, subTitle }) => {
-  const onChangeTitle = (e) => {
-    onChangeField({ key: 'subTitle', value: e.target.value });
-  };
-  return (
-    <SubTitleInput
-      placeholder="SubTitle"
-      onChange={onChangeTitle}
-      value={subTitle}
-    />
-  );
-};
+
 const BodyBlock = ({ onChangeField, body }) => {
   const quillElement = useRef(null); // Quill을 적용할 DivElement를 설정
   const quillInstance = useRef(null); // Quill 인스턴스를 설정
   hljs.configure({
     languages: ['javascript', 'python', 'c++'],
   });
+
   useEffect(() => {
     const modules = {
       syntax: { highlight: (text) => hljs.highlightAuto(text).value },
@@ -122,15 +108,16 @@ const BodyBlock = ({ onChangeField, body }) => {
         ],
       },
       imageUploader: {
-        upload: async (file) => {
-          return new Promise((resolve, reject) => {
+        upload: (file) =>
+          new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('image', file);
             fetch(
-              `${process.env.REACT_APP_API_URL}/upload`,
+              process.env.REACT_APP_API_IMAGE,
               {
                 method: 'POST',
                 body: formData,
+                credentials: 'include',
               },
               {
                 withCredentials: true,
@@ -138,14 +125,12 @@ const BodyBlock = ({ onChangeField, body }) => {
             )
               .then((response) => response.json())
               .then((result) => {
-                resolve(`${process.env.REACT_APP_API_URL}/get/${result}`);
+                resolve(`${process.env.REACT_APP_API_IMAGE}/${result}`);
               })
               .catch((error) => {
-                reject('Upload failed');
-                console.error(error);
+                alert('이미지 업로드 실패');
               });
-          });
-        },
+          }),
       },
       clipboard: { matchVisual: false },
       ImageResize: {
@@ -191,12 +176,14 @@ const BodyBlock = ({ onChangeField, body }) => {
       }
     });
   }, [onChangeField]);
+
   const mounted = useRef(false);
   useEffect(() => {
     if (mounted.current) return;
     mounted.current = true;
     quillInstance.current.root.innerHTML = body;
   }, [body]);
+
   return (
     <QuillWrapper>
       <div ref={quillElement} />

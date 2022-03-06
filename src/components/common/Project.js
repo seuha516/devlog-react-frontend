@@ -26,7 +26,7 @@ const Project = () => {
         <Route path="/project" exact component={Main} />
         <Route path="/project/list" component={List} />
         <Route path="/project/write" component={Write} />
-        <Route path="/project/read/:Id" component={Read} />
+        <Route path="/project/read/:id" component={Read} />
         <Route component={NotFound} />
       </Switch>
     </Background>
