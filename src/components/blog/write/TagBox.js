@@ -135,6 +135,7 @@ const TagBox = ({ tags, tagList }) => {
       dispatch(changeField({ key: 'tags', value: [...tags, { name: value, color: color }] }));
       setInput('');
       setColor('#ffffff');
+      setPopUp(false);
     },
     [color, dispatch, tags],
   );
