@@ -7,5 +7,5 @@ export const remove = (id) => client.delete(`post/${id}`);
 export const update = ({ id, post }) => client.patch(`post/${id}`, post);
 export const catalog = () => client.get(`post/catalog`);
 export const like = (id) => client.post(`post/${id}/like`);
-export const writeComment = ({ id, comment }) => client.post(`post/${id}/comment`, comment);
-export const removeComment = ({ id, comment }) => client.delete(`post/${id}/comment`, comment);
+export const writeComment = ({ id, comment }) => client.post(`post/${id}/comment/write`, comment);
+export const removeComment = ({ id, comment }) => client.post(`post/${id}/comment/remove`, comment);

@@ -4,15 +4,17 @@ import createRequestSaga, { createRequestActionTypes } from 'lib/createRequestSa
 import * as projectAPI from 'lib/api/project';
 
 const INIT_READ_PROJECT = 'readProjects/INIT_READ_PROJECT';
-const [READ_PROJECT, READ_PROJECT_SUCCESS, READ_PROJECT_FAILURE] =
-  createRequestActionTypes('readProjects/READ_PROJECT');
-const [REMOVE_PROJECT, REMOVE_PROJECT_SUCCESS, REMOVE_PROJECT_FAILURE] =
-  createRequestActionTypes('readProjects/REMOVE_PROJECT');
-const [LIKE_PROJECT, LIKE_PROJECT_SUCCESS, LIKE_PROJECT_FAILURE] =
-  createRequestActionTypes('readProjects/LIKE_PROJECT');
-const [WRITE_COMMENT_PROJECT, WRITE_COMMENT_PROJECT_SUCCESS, WRITE_COMMENT_PROJECT_FAILURE] = createRequestActionTypes(
-  'readProjects/WRITE_COMMENT_PROJECT',
+const [READ_PROJECT, READ_PROJECT_SUCCESS, READ_PROJECT_FAILURE] = createRequestActionTypes(
+  'readProjects/READ_PROJECT',
 );
+const [REMOVE_PROJECT, REMOVE_PROJECT_SUCCESS, REMOVE_PROJECT_FAILURE] = createRequestActionTypes(
+  'readProjects/REMOVE_PROJECT',
+);
+const [LIKE_PROJECT, LIKE_PROJECT_SUCCESS, LIKE_PROJECT_FAILURE] = createRequestActionTypes(
+  'readProjects/LIKE_PROJECT',
+);
+const [WRITE_COMMENT_PROJECT, WRITE_COMMENT_PROJECT_SUCCESS, WRITE_COMMENT_PROJECT_FAILURE] =
+  createRequestActionTypes('readProjects/WRITE_COMMENT_PROJECT');
 const [REMOVE_COMMENT_PROJECT, REMOVE_COMMENT_PROJECT_SUCCESS, REMOVE_COMMENT_PROJECT_FAILURE] =
   createRequestActionTypes('readProjects/REMOVE_COMMENT_PROJECT');
 
@@ -20,14 +22,23 @@ export const initReadProject = createAction(INIT_READ_PROJECT);
 export const readProject = createAction(READ_PROJECT, (id) => id);
 export const removeProject = createAction(REMOVE_PROJECT, (id) => id);
 export const likeProject = createAction(LIKE_PROJECT, (id) => id);
-export const writeCommentProject = createAction(WRITE_COMMENT_PROJECT, ({ id, comment }) => ({ id, comment }));
-export const removeCommentProject = createAction(REMOVE_COMMENT_PROJECT, ({ id, comment }) => ({ id, comment }));
+export const writeCommentProject = createAction(WRITE_COMMENT_PROJECT, ({ id, comment }) => ({
+  id,
+  comment,
+}));
+export const removeCommentProject = createAction(REMOVE_COMMENT_PROJECT, ({ id, comment }) => ({
+  id,
+  comment,
+}));
 
 const readProjectSaga = createRequestSaga(READ_PROJECT, projectAPI.read);
 const removeProjectSaga = createRequestSaga(REMOVE_PROJECT, projectAPI.remove);
 const likeProjectSaga = createRequestSaga(LIKE_PROJECT, projectAPI.like);
 const writeCommentProjectSaga = createRequestSaga(WRITE_COMMENT_PROJECT, projectAPI.writeComment);
-const removeCommentProjectSaga = createRequestSaga(REMOVE_COMMENT_PROJECT, projectAPI.removeComment);
+const removeCommentProjectSaga = createRequestSaga(
+  REMOVE_COMMENT_PROJECT,
+  projectAPI.removeComment,
+);
 
 export function* readProjectsSaga() {
   yield takeLatest(READ_PROJECT, readProjectSaga);
@@ -71,6 +82,10 @@ const readBlog = handleActions(
       alert(error.response.data.message);
       return state;
     },
+    [LIKE_PROJECT]: (state) => ({
+      ...state,
+      reload: false,
+    }),
     [LIKE_PROJECT_SUCCESS]: (state) => ({
       ...state,
       reload: true,
@@ -79,6 +94,10 @@ const readBlog = handleActions(
       alert(error.response.data.message);
       return state;
     },
+    [WRITE_COMMENT_PROJECT]: (state) => ({
+      ...state,
+      reload: false,
+    }),
     [WRITE_COMMENT_PROJECT_SUCCESS]: (state) => ({
       ...state,
       reload: true,
@@ -87,6 +106,10 @@ const readBlog = handleActions(
       alert(error.response.data.message);
       return state;
     },
+    [REMOVE_COMMENT_PROJECT]: (state) => ({
+      ...state,
+      reload: false,
+    }),
     [REMOVE_COMMENT_PROJECT_SUCCESS]: (state) => ({
       ...state,
       reload: true,
