@@ -158,6 +158,7 @@ const LinkIcon = styled.img`
   margin: 15px;
   box-shadow: 1px 1px 3px;
   transition: all 0.2s linear;
+  cursor: pointer;
   &:hover {
     box-shadow: 3px 3px 7px;
   }
@@ -234,7 +235,7 @@ const BackgroundBlock = () => {
       easing: 'linear',
       fill: 'forwards',
     });
-    await sleep(600);
+    await sleep(700);
     setBackgroundNumber([nextImage, nextImage]);
     if (FrontImage.current) FrontImage.current.opacity = 1;
     if (ImageLoading.current) ImageLoading.current = false;
