@@ -309,6 +309,13 @@ const PostSubTitle = styled.div`
   letter-spacing: -0.5px;
   margin: 10px 0 30px 0;
   font-family: 'Noto Sans KR', sans-serif;
+  max-width: 430px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  @media all and (max-width: 1300px) {
+    white-space: pre-wrap;
+  }
 `;
 const PostTags = styled.div`
   display: flex;
@@ -514,13 +521,20 @@ const PostList = ({ posts, postCount, location, user, setPage }) => {
               <PostTextWrapper>
                 <PostTitleAndDate>
                   <PostTitle>{post.title}</PostTitle>
-                  <PostPublishedDate>{dateToString(new Date(post.date.publishedDate))}</PostPublishedDate>
+                  <PostPublishedDate>
+                    {dateToString(new Date(post.date.publishedDate))}
+                  </PostPublishedDate>
                 </PostTitleAndDate>
                 <PostSubTitle>{post.subTitle}</PostSubTitle>
                 <PostTags>
                   {post.tags.map((tag, index) => {
                     if (index < 3) {
-                      return <PostTag key={tag._id} style={{ color: tag.color }}>{`#${tag.name}`}</PostTag>;
+                      return (
+                        <PostTag
+                          key={tag._id}
+                          style={{ color: tag.color }}
+                        >{`#${tag.name}`}</PostTag>
+                      );
                     } else if (index === 3) {
                       return (
                         <PostTagsText key={tag._id} style={{ color: 'darkgray' }}>{` + ${
@@ -533,7 +547,7 @@ const PostList = ({ posts, postCount, location, user, setPage }) => {
               </PostTextWrapper>
             </PostWrapper>
           ))}
-          {posts.length % 2 === 1 && posts.length > 2 && <FakePostWrapper key="fakePostWrapper" />}
+          {posts.length % 2 === 1 && posts.length > 2 && <FakePostWrapper />}
         </PostsWrapper>
       </ContentWrapper>
       <ContentWrapper>
