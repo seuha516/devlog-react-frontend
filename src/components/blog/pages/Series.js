@@ -243,6 +243,7 @@ const PostSubTitle = styled.div`
   font-size: 18px;
   letter-spacing: -0.5px;
   margin-top: 10px;
+  line-height: normal;
   font-family: 'Noto Sans KR', sans-serif;
 `;
 

@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AiOutlineLeftCircle, AiOutlineRightCircle } from 'react-icons/ai';
+import {
+  AiOutlineLeftCircle,
+  AiOutlineRightCircle,
+  AiOutlineLike,
+  AiOutlineComment,
+} from 'react-icons/ai';
 import { BiPencil, BiTimeFive, BiCodeAlt } from 'react-icons/bi';
 import { BsHash } from 'react-icons/bs';
 import styled from 'styled-components';
@@ -114,12 +119,10 @@ const QueryProject = styled(Link)`
 `;
 const QuerySortWrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 5px;
   justify-content: space-between;
   align-items: flex-start;
+  width: 100%;
+  margin-top: 5px;
 `;
 const QuerySortItem = styled(Link)`
   display: flex;
@@ -287,20 +290,39 @@ const PostTitle = styled.div`
     width: 100%;
   }
 `;
+const PostInfo = styled.div`
+  width: 70px;
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  @media all and (max-width: 377px) {
+    display: none;
+  }
+`;
 const PostPublishedDate = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 70px;
-  margin-top: 5px;
+  width: 100%;
   align-self: flex-start;
   justify-content: flex-end;
   letter-spacing: -1px;
   font-family: 'Nanum Myeongjo', serif;
   color: darkgray;
-  @media all and (max-width: 377px) {
-    display: none;
+  margin-bottom: 3px;
+`;
+const PostLikeAndComment = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 14px;
+  color: #d2d2d2;
+  svg {
+    width: 14px;
+    height: 14px;
+    margin-left: 5px;
+    margin-right: 1.5px;
+    margin-bottom: -1.5px;
   }
 `;
 const PostSubTitle = styled.div`
@@ -521,28 +543,41 @@ const PostList = ({ posts, postCount, location, user, setPage }) => {
               <PostTextWrapper>
                 <PostTitleAndDate>
                   <PostTitle>{post.title}</PostTitle>
-                  <PostPublishedDate>
-                    {dateToString(new Date(post.date.publishedDate))}
-                  </PostPublishedDate>
+                  <PostInfo>
+                    <PostPublishedDate>
+                      {dateToString(new Date(post.date.publishedDate))}
+                    </PostPublishedDate>
+                    <PostLikeAndComment>
+                      <div>
+                        <AiOutlineLike />
+                        {post.likeCount}
+                      </div>
+                      <div>
+                        <AiOutlineComment />
+                        {post.commentCount}
+                      </div>
+                    </PostLikeAndComment>
+                  </PostInfo>
                 </PostTitleAndDate>
                 <PostSubTitle>{post.subTitle}</PostSubTitle>
                 <PostTags>
-                  {post.tags.map((tag, index) => {
-                    if (index < 3) {
-                      return (
-                        <PostTag
-                          key={tag._id}
-                          style={{ color: tag.color }}
-                        >{`#${tag.name}`}</PostTag>
-                      );
-                    } else if (index === 3) {
-                      return (
-                        <PostTagsText key={tag._id} style={{ color: 'darkgray' }}>{` + ${
-                          post.tags.length - 3
-                        }`}</PostTagsText>
-                      );
-                    } else return null;
-                  })}
+                  {post.tags &&
+                    post.tags.map((tag, index) => {
+                      if (index < 3) {
+                        return (
+                          <PostTag
+                            key={tag._id}
+                            style={{ color: tag.color }}
+                          >{`#${tag.name}`}</PostTag>
+                        );
+                      } else if (index === 3) {
+                        return (
+                          <PostTagsText key={tag._id} style={{ color: 'darkgray' }}>{` + ${
+                            post.tags.length - 3
+                          }`}</PostTagsText>
+                        );
+                      } else return null;
+                    })}
                 </PostTags>
               </PostTextWrapper>
             </PostWrapper>

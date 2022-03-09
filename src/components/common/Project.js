@@ -1,11 +1,12 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import styled from 'styled-components';
+
 import Main from 'components/project/pages/Main';
 import List from 'components/project/pages/List';
 import Write from 'components/project/pages/Write';
 import Read from 'components/project/pages/Read';
 import NotFound from 'components/utils/NotFound';
-import styled from 'styled-components';
 
 const Background = styled.div`
   display: flex;

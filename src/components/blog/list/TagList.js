@@ -53,12 +53,11 @@ const InfoText = styled.div`
 
 const MovePageWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   margin-top: 5px;
   margin: -15px 0 30px 0;
-  justify-content: space-between;
 `;
 const MovePageSetPage = styled.div`
   display: flex;

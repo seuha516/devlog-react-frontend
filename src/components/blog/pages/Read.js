@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AiOutlineFundProjectionScreen } from 'react-icons/ai';
+import { AiOutlineFundProjectionScreen, AiOutlineReload } from 'react-icons/ai';
 import { BiTrashAlt, BiLike, BiArrowBack, BiReply } from 'react-icons/bi';
 import { BsBook, BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import { RiBallPenLine } from 'react-icons/ri';
@@ -404,7 +404,6 @@ const CommentInputWriteButton = styled.div`
     background-color: #323232;
   }
 `;
-
 const CommentBox = styled.div`
   width: 100%;
 `;
@@ -519,6 +518,29 @@ const RemovePopup = styled.div`
     &:hover {
       color: black;
     }
+  }
+`;
+const LoadMoreCommentButtonWrapper = styled.div`
+  width: 100%;
+  height: 60px;
+  padding: 20px 0;
+  background-color: #f1f1f1;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: center;
+  justify-content: center;
+  transition: all 0.15s linear;
+  cursor: pointer;
+  &:hover {
+    background-color: #c9c9c9;
+  }
+  svg {
+    width: 20px;
+    height: 20px;
+    margin: -1px 5px 0 0;
+  }
+  div {
+    height: 20px;
   }
 `;
 
@@ -751,7 +773,11 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const year = date.getFullYear();
-    return `${format(year % 100)}-${format(month)}-${format(day)}`;
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    return `${format(year % 100)}-${format(month)}-${format(day)} ${format(hour)}:${format(
+      minute,
+    )}`;
   };
   const countComment = (comment) => {
     let count = 0;
@@ -763,9 +789,18 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
     }
     return count;
   };
+  const loadMoreComment = (i) => {
+    let limit = 10;
+    for (; i < comment.length; i++) {
+      limit -= comment[i].reply.length + 1;
+      if (limit <= 0) break;
+    }
+    return i + 1;
+  };
   const [state, stateDispatch] = useReducer(reducer, initialState);
   const [replyId, setReplyId] = useState(null);
   const [removeId, setRemoveId] = useState(null);
+  const [visibleCommentIndex, setVisibleCommentIndex] = useState(loadMoreComment(0));
 
   useEffect(() => {
     if (reload) {
@@ -776,9 +811,9 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
   }, [reload]);
 
   const onClickWriteComment = (commentId) => {
-    const nickname = commentId ? state.replyNickname : state.nickname;
-    const password = commentId ? state.replyPassword : state.password;
-    const content = commentId ? state.replyContent : state.content;
+    const nickname = commentId !== '' ? state.replyNickname : state.nickname;
+    const password = commentId !== '' ? state.replyPassword : state.password;
+    const content = commentId !== '' ? state.replyContent : state.content;
     if (nickname.length === 0) {
       alert('닉네임을 입력해 주세요.');
       return;
@@ -794,6 +829,9 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
     if (content.length === 0) {
       alert('댓글 내용을 입력해 주세요.');
       return;
+    }
+    if (commentId === '') {
+      setVisibleCommentIndex(comment.length + 9999);
     }
     dispatch(
       writeCommentPost({
@@ -824,7 +862,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
   return (
     <CommentWrapper>
       <CommentCount>{`${countComment(comment)} Comments`}</CommentCount>
-      {comment.map((i) => (
+      {comment.slice(0, visibleCommentIndex).map((i) => (
         <CommentBox key={i._id}>
           <CommentItemWrapper nickname={i.nickname} die={i.die}>
             <CommentItemNicknameAndContent>
@@ -997,6 +1035,16 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
           댓글이 없습니다.
           <br />첫 댓글을 남겨보세요!
         </NoComment>
+      )}
+      {visibleCommentIndex <= comment.length && (
+        <LoadMoreCommentButtonWrapper
+          onClick={() => {
+            setVisibleCommentIndex(loadMoreComment(visibleCommentIndex));
+          }}
+        >
+          <AiOutlineReload />
+          <div>댓글 더 보기</div>
+        </LoadMoreCommentButtonWrapper>
       )}
       <CommentInputWrapper>
         <CommentInputSmallWrapper>

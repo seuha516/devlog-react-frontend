@@ -9,15 +9,17 @@ import TagList from 'components/blog/list/TagList';
 import SeriesList from 'components/blog/list/SeriesList';
 
 const List = ({ location, history }) => {
-  const { posts, postCount, tags, series, error, loading, user } = useSelector(({ listBlog, loading, user }) => ({
-    posts: listBlog.posts,
-    postCount: listBlog.postCount,
-    tags: listBlog.tags,
-    series: listBlog.series,
-    error: listBlog.error,
-    loading: loading['listBlog/LIST_POST'],
-    user: user.user,
-  }));
+  const { posts, postCount, tags, series, error, loading, user } = useSelector(
+    ({ listBlog, loading, user }) => ({
+      posts: listBlog.posts,
+      postCount: listBlog.postCount,
+      tags: listBlog.tags,
+      series: listBlog.series,
+      error: listBlog.error,
+      loading: loading['listBlog/LIST_POST'],
+      user: user.user,
+    }),
+  );
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   useEffect(() => {
@@ -51,7 +53,15 @@ const List = ({ location, history }) => {
       {page === 0
         ? tags && <TagList tags={tags} location={location} setPage={setPage} />
         : page === 1
-        ? posts && <PostList posts={posts} postCount={postCount} location={location} user={user} setPage={setPage} />
+        ? posts && (
+            <PostList
+              posts={posts}
+              postCount={postCount}
+              location={location}
+              user={user}
+              setPage={setPage}
+            />
+          )
         : series && <SeriesList series={series} setPage={setPage} />}
     </>
   );

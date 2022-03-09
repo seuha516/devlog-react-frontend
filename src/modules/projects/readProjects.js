@@ -60,12 +60,10 @@ const readBlog = handleActions(
   {
     [INIT_READ_PROJECT]: () => initialState,
 
-    [READ_PROJECT]: () => initialState,
     [READ_PROJECT_SUCCESS]: (state, { payload: project }) => ({
       ...state,
       project,
     }),
-
     [READ_PROJECT_FAILURE]: (state, { payload: error }) => {
       alert(error.response.data.message);
       return {
