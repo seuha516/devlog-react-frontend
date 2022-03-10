@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { GrDocumentUpdate } from 'react-icons/gr';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
+import { GrDocumentUpdate } from 'react-icons/gr';
+import styled from 'styled-components';
 import { changeField } from 'modules/projects/writeProjects';
 
 const FlexRow = styled.div`
@@ -59,7 +59,7 @@ const Data = styled(FlexRow)`
     background-color: #ff2a2a78;
   }
 `;
-const Contents = styled(FlexRow)`
+const Content = styled(FlexRow)`
   font-size: 18px;
   margin: 5px;
   color: black;
@@ -84,7 +84,7 @@ const Input = styled.input`
   border: none;
   border-bottom: 3px solid #b4b4b4;
   background-color: transparent;
-  font-size: 25px;
+  font-size: 26px;
   font-family: 'Crimson Pro', serif;
   text-align: center;
   color: #e3e3e3;
@@ -103,41 +103,34 @@ const PlusButton = styled(AiOutlinePlusCircle)`
   color: white;
 `;
 
-const Update = () => {
+const Update = ({ update }) => {
   const dispatch = useDispatch();
-  const update = useSelector((store) => store.writeProjects.update);
-  const [state, setState] = useState(update);
 
   const [input, setInput] = useState({
-    contents: '',
+    content: '',
     date: '',
   });
 
-  const onChangeInput = (e) =>
-    setInput({ ...input, [e.target.name]: e.target.value });
+  const onChangeInput = (e) => setInput({ ...input, [e.target.name]: e.target.value });
   const addLink = () => {
-    if (input.contents === '' || input.date === '') {
+    if (input.content === '' || input.date === '') {
       alert('빈 칸을 채워주세요.');
       return;
     }
-    for (let i = 0; i < state.length; i++) {
-      if (state[i].contents === input.contents) {
-        alert('이미 있는 contents입니다.');
+    for (let i = 0; i < update.length; i++) {
+      if (update[i].content === input.content) {
+        alert('이미 있는 content입니다.');
         return;
       }
     }
-    const nextArray = [...state, input];
-    setState(nextArray);
-    setInput({ contents: '', date: '' });
+    dispatch(changeField({ key: 'update', value: [...update, input] }));
+    setInput({ content: '', date: '' });
   };
-  const removeLink = (contents) => {
-    const nextArray = state.filter((item) => item.contents !== contents);
-    setState(nextArray);
+  const removeLink = (content) => {
+    dispatch(
+      changeField({ key: 'update', value: update.filter((item) => item.content !== content) }),
+    );
   };
-
-  useEffect(() => {
-    dispatch(changeField({ key: 'update', value: state }));
-  }, [state, dispatch]);
 
   return (
     <Wrapper>
@@ -148,28 +141,20 @@ const Update = () => {
         <FlexColumn>
           <Result>
             {update.map((item) => (
-              <Data
-                key={item.contents}
-                onClick={() => removeLink(item.contents)}
-              >
-                <Contents>{item.contents}</Contents>
+              <Data key={item.content} onClick={() => removeLink(item.content)}>
+                <Content>{item.content}</Content>
                 <Date>{item.date}</Date>
               </Data>
             ))}
           </Result>
           <InputWrapper>
             <Input
-              name="contents"
-              placeholder="Contents"
+              name="content"
+              placeholder="Content"
               onChange={onChangeInput}
-              value={input.contents}
+              value={input.content}
             />
-            <Input
-              name="date"
-              placeholder="Date"
-              onChange={onChangeInput}
-              value={input.date}
-            />
+            <Input name="date" placeholder="Date" onChange={onChangeInput} value={input.date} />
           </InputWrapper>
           <PlusButton onClick={addLink} />
         </FlexColumn>

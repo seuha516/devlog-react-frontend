@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 import { BsArrowRight } from 'react-icons/bs';
-import { listPost } from 'modules/blog/listBlog';
+import styled from 'styled-components';
+
 import Loading from 'components/utils/Loading';
 import Post from 'components/home/Post';
+import { listPost } from 'modules/blog/listBlog';
 
 const FlexRow = styled.div`
   display: flex;
@@ -89,7 +90,15 @@ const Posts = () => {
           <BsArrowRight />
         </More>
       </Header>
-      <Content>{error ? <div>Error</div> : loading ? <Loading /> : posts && posts.slice(0, 4).map((post) => <Post key={post._id} post={post} />)}</Content>
+      <Content>
+        {error ? (
+          <div>Error</div>
+        ) : loading ? (
+          <Loading />
+        ) : (
+          posts && posts.slice(0, 4).map((post) => <Post key={post._id} post={post} />)
+        )}
+      </Content>
     </Wrapper>
   );
 };

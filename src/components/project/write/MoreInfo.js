@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { AiTwotoneSetting } from 'react-icons/ai';
 import { BiCodeBlock } from 'react-icons/bi';
 import { GiSandsOfTime } from 'react-icons/gi';
-import { AiTwotoneSetting } from 'react-icons/ai';
+import styled from 'styled-components';
 import { changeField } from 'modules/projects/writeProjects';
 
 const FlexRow = styled.div`
@@ -58,22 +58,15 @@ const Checkbox = styled.input`
   margin: 5px;
 `;
 
-const MoreInfo = () => {
+const MoreInfo = ({ moreInfo }) => {
   const dispatch = useDispatch();
-  const moreInfo = useSelector((store) => store.writeProjects.moreInfo);
-  const [state, setState] = useState(moreInfo);
 
   const onChange1 = (e) => {
-    const nextState = { ...state, projectClass: e.target.name };
-    setState(nextState);
+    dispatch(changeField({ key: 'moreInfo', value: { ...moreInfo, projectClass: e.target.name } }));
   };
   const onChange2 = (e) => {
-    const nextState = { ...state, developState: e.target.name };
-    setState(nextState);
+    dispatch(changeField({ key: 'moreInfo', value: { ...moreInfo, developState: e.target.name } }));
   };
-  useEffect(() => {
-    dispatch(changeField({ key: 'moreInfo', value: state }, [state, dispatch]));
-  });
 
   const projectClassList = ['Group Project', 'Personal Project', 'Practice'];
   const developStateList = ['In Progress', 'Complete'];

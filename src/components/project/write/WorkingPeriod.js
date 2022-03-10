@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { BiTimer } from 'react-icons/bi';
+import styled from 'styled-components';
 import { changeField } from 'modules/projects/writeProjects';
 
 const FlexRow = styled.div`
@@ -62,19 +62,17 @@ const Text = styled.div`
   }
 `;
 
-const WorkingPeriod = () => {
+const WorkingPeriod = ({ workingPeriod }) => {
   const dispatch = useDispatch();
-  const workingPeriod = useSelector(
-    (store) => store.writeProjects.workingPeriod,
-  );
-  const [state, setState] = useState(workingPeriod);
 
   const onChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
+    dispatch(
+      changeField({
+        key: 'workingPeriod',
+        value: { ...workingPeriod, [e.target.name]: e.target.value },
+      }),
+    );
   };
-  useEffect(() => {
-    dispatch(changeField({ key: 'workingPeriod', value: state }));
-  }, [state, dispatch]);
 
   return (
     <Wrapper>
@@ -82,19 +80,9 @@ const WorkingPeriod = () => {
         <BiTimer /> Working Period
       </Title>
       <InputWrapper>
-        <Input
-          name="start"
-          placeholder="Start"
-          value={workingPeriod.start}
-          onChange={onChange}
-        />
+        <Input name="start" placeholder="Start" value={workingPeriod.start} onChange={onChange} />
         <Text>~</Text>
-        <Input
-          name="end"
-          placeholder="End"
-          value={workingPeriod.end}
-          onChange={onChange}
-        />
+        <Input name="end" placeholder="End" value={workingPeriod.end} onChange={onChange} />
       </InputWrapper>
     </Wrapper>
   );

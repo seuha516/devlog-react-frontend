@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import styled from 'styled-components';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { AiOutlineFolder } from 'react-icons/ai';
+import styled from 'styled-components';
+import axios from 'axios';
 import { changeField } from 'modules/projects/writeProjects';
 
 const Wrapper = styled.div`
@@ -56,34 +56,23 @@ const Input = styled.input`
   }
 `;
 
-const Thumbnail = () => {
+const Thumbnail = ({ thumbnail }) => {
   const dispatch = useDispatch();
-  const thumbnail = useSelector((store) => store.writeProjects.thumbnail);
 
-  const loading = useRef(false);
   const onChange = async (e) => {
-    if (loading.current) {
-      alert('업로드중입니다.');
-      return;
-    }
-    loading.current = true;
-    console.log('이미지 업로드 시작');
     const thumbnailImage = e.target.files[0];
     const formData = new FormData();
     formData.append('image', thumbnailImage);
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/upload`, formData, {
+      .post(process.env.REACT_APP_API_IMAGE, formData, {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(`이미지 업로드 완료, ID: ${response.data}`);
         dispatch(changeField({ key: 'thumbnail', value: response.data }));
       })
       .catch((error) => {
         alert('이미지 업로드 실패');
-        console.error(error);
       });
-    loading.current = false;
   };
 
   return (

@@ -37,9 +37,12 @@ const Thumbnail = styled.img`
   aspect-ratio: 16 / 9;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  cursor: pointer;
 `;
 const TextWrapper = styled(FlexColumn)`
   width: 100%;
+  text-align: center;
+  padding: 0 5px;
   aspect-ratio: 80 / 19;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -48,10 +51,12 @@ const TextWrapper = styled(FlexColumn)`
   justify-content: space-evenly;
 `;
 const Title = styled.div`
+  width: 100%;
   font-size: 25px;
   font-weight: 600;
   font-family: 'Noto Serif KR', serif;
   letter-spacing: 1px;
+  line-height: normal;
   @media all and (min-width: 1025px) and (max-width: 1572.8px) {
     font-size: calc(calc(100vw - 16.8px) * 9 / 35 * 25 / 400);
     font-weight: 500;
@@ -69,12 +74,16 @@ const Title = styled.div`
   }
 `;
 const Tags = styled(FlexRow)`
-  max-width: 95%;
-  height: 20px;
+  width: 100%;
+  height: 25px;
   overflow: hidden;
+  @media all and (max-width: 470px) {
+    margin-top: -5px;
+  }
 `;
 const Tag = styled.div`
   font-size: 18px;
+  line-height: normal;
   & + & {
     margin-left: 10px;
   }
@@ -99,7 +108,7 @@ const Tag = styled.div`
 `;
 const TagsText = styled.div`
   font-size: 18px;
-  color: white;
+  color: #b6b6b6;
   margin-left: 10px;
   @media all and (min-width: 1025px) and (max-width: 1572.8px) {
     font-size: calc(calc(100vw - 16.8px) * 9 / 35 * 18 / 400);
@@ -118,7 +127,13 @@ const TagsText = styled.div`
 const Project = ({ project }) => {
   return (
     <Wrapper to={`/project/read/${project._id}`}>
-      <Thumbnail src={project.thumbnail === '' ? 'images/Project/Default.png' : `${process.env.REACT_APP_API_IMAGE}/${project.thumbnail}`} />
+      <Thumbnail
+        src={
+          project.thumbnail === ''
+            ? 'images/Project/Default.png'
+            : `${process.env.REACT_APP_API_IMAGE}/${project.thumbnail}`
+        }
+      />
       <TextWrapper>
         <Title>{project.title}</Title>
         <Tags>

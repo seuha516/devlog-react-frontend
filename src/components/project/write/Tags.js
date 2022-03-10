@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { ChromePicker } from 'react-color';
 import { IoIosPricetags } from 'react-icons/io';
 import { BsPlusCircle } from 'react-icons/bs';
-import { changeField, catalogProject } from 'modules/projects/writeProjects';
+import styled from 'styled-components';
+import { changeField } from 'modules/projects/writeProjects';
 
 const FlexRow = styled.div`
   display: flex;
@@ -21,6 +22,23 @@ const Wrapper = styled(FlexColumn)`
   width: 100%;
   max-width: 700px;
   margin-top: 40px;
+  position: relative;
+  .chrome-picker {
+    position: absolute;
+    top: 135px;
+    left: calc(50% - 10px);
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+  }
+  @media all and (max-width: 520px) {
+    .chrome-picker {
+      top: 200px;
+      left: calc(50% - 112.5px);
+    }
+  }
 `;
 const Title = styled(FlexRow)`
   width: 150px;
@@ -56,11 +74,15 @@ const SearchInput = styled.input`
   outline: none;
   padding: 5px 20px;
   border: 2.5px solid #4b4b4b;
-  background-color: transparent;
+  background-color: #4b4b4b;
   font-size: 20px;
   text-align: center;
   @media all and (max-width: 520px) {
     margin: 0 calc(50% - 125px);
+  }
+  &::placeholder {
+    color: #c1c1c1;
+    font-size: 14px;
   }
 `;
 const PalleteWrapper = styled.div`
@@ -78,24 +100,6 @@ const PalleteButton = styled.div`
   width: 45px;
   height: 45px;
   background-color: transparent;
-`;
-const PalleteInput = styled(FlexRow)`
-  position: absolute;
-  margin-top: -45px;
-  margin-left: -27.5px;
-  width: 100px;
-  height: 40px;
-  padding: 5px 15px;
-  border-radius: 8px;
-  background-color: #151515;
-`;
-const PalleteText = styled.input`
-  width: 100%;
-  outline: none;
-  border: none;
-  background: transparent;
-  text-align: center;
-  color: white;
 `;
 const TagBox = styled(FlexRow)`
   width: 100%;
@@ -115,44 +119,38 @@ const Tag = styled.div`
   }
 `;
 
-const Tags = () => {
+const Tags = ({ tags, tagList }) => {
   const dispatch = useDispatch();
-  const tags = useSelector((state) => state.writeProjects.tags);
-  const tagList = useSelector((state) => state.catalogProjects.tags);
-  const [localTags, setLocalTags] = useState(tags);
 
   const [input, setInput] = useState('');
-  const [pallete, setPallete] = useState('#ffffff');
-  const [palleteOpen, setPalleteOpen] = useState(false);
-  const textDOM = useRef(null);
+  const [color, setColor] = useState('#ffffff');
+  const [popUp, setPopUp] = useState(false);
 
-  const addTag = () => {
-    if (input === '') {
-      alert('빈 태그는 입력할 수 없습니다.');
-      return;
-    }
-    for (let i = 0; i < localTags.length; i++) {
-      if (localTags[i].name === input) {
-        alert('이미 있는 태그입니다.');
+  const insertTag = useCallback(
+    (value) => {
+      if (value === '') {
+        alert('태그를 입력해 주세요.');
         return;
       }
-    }
-    const nextTags = [...localTags, { name: input, color: pallete }];
-    setLocalTags(nextTags);
-    setInput('');
-    setPallete('#ffffff');
-    setPalleteOpen(false);
-  };
-  const removeTag = (tagName) => {
-    const nextTags = localTags.filter((tag) => tag.name !== tagName);
-    setLocalTags(nextTags);
-  };
-  useEffect(() => {
-    dispatch(changeField({ key: 'tags', value: localTags }));
-  }, [dispatch, localTags]);
-  useEffect(() => {
-    dispatch(catalogProject());
-  }, [dispatch]);
+      for (let i = 0; i < tags.length; i++) {
+        if (tags[i].name === value) {
+          alert('이미 있는 태그입니다.');
+          return;
+        }
+      }
+      dispatch(changeField({ key: 'tags', value: [...tags, { name: value, color: color }] }));
+      setInput('');
+      setColor('#ffffff');
+      setPopUp(false);
+    },
+    [color, dispatch, tags],
+  );
+  const onRemove = useCallback(
+    (value) => {
+      dispatch(changeField({ key: 'tags', value: tags.filter((i) => i.name !== value) }));
+    },
+    [dispatch, tags],
+  );
 
   return (
     <Wrapper>
@@ -161,45 +159,28 @@ const Tags = () => {
       </Title>
       <SearchWrapper>
         <SearchInput
+          placeholder="태그를 입력하세요"
           value={input}
           onChange={(e) => {
             setInput(e.target.value);
-            if (tagList[e.target.value]) setPallete(tagList[e.target.value]);
+            if (tagList[e.target.value]) setColor(tagList[e.target.value]);
           }}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              insertTag(input.trim());
+            }
+          }}
+          style={{ color: color }}
         />
-        <PalleteWrapper color={pallete}>
-          <PalleteButton
-            onClick={async () => {
-              const nextPalleteOpen = !palleteOpen;
-              setPalleteOpen(nextPalleteOpen);
-              if (nextPalleteOpen) {
-                await new Promise((resolve) => setTimeout(resolve, 10));
-                if (textDOM.current) textDOM.current.focus();
-              }
-            }}
-          />
-          {palleteOpen && (
-            <PalleteInput>
-              <PalleteText
-                ref={textDOM}
-                value={pallete}
-                onChange={(e) => {
-                  setPallete(e.target.value);
-                }}
-              />
-            </PalleteInput>
-          )}
+        <PalleteWrapper color={color}>
+          <PalleteButton onClick={() => setPopUp(!popUp)} />
+          {popUp && <ChromePicker disableAlpha color={color} onChange={(c) => setColor(c.hex)} />}
         </PalleteWrapper>
-        <BsPlusCircle
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            addTag();
-          }}
-        />
+        <BsPlusCircle style={{ cursor: 'pointer' }} onClick={() => insertTag(input.trim())} />
       </SearchWrapper>
       <TagBox>
         {tags.map((tag) => (
-          <Tag key={tag.name} style={{ color: tag.color }} onClick={() => removeTag(tag.name)}>
+          <Tag key={tag.name} style={{ color: tag.color }} onClick={() => onRemove(tag.name)}>
             {`#${tag.name}`}
           </Tag>
         ))}

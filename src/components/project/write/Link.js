@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { BiLink, BiCodeBlock } from 'react-icons/bi';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { AiFillGithub, AiOutlinePlusCircle } from 'react-icons/ai';
+import { BiLink, BiCodeBlock } from 'react-icons/bi';
+import styled from 'styled-components';
 import { changeField } from 'modules/projects/writeProjects';
 
 const FlexRow = styled.div`
@@ -78,6 +78,7 @@ const Data = styled(FlexRow)`
 `;
 const Url = styled(FlexRow)`
   font-size: 18px;
+  word-break: break-all;
   margin: 5px;
   color: white;
 `;
@@ -120,10 +121,8 @@ const PlusButton = styled(AiOutlinePlusCircle)`
   color: white;
 `;
 
-const Link = () => {
+const Link = ({ link }) => {
   const dispatch = useDispatch();
-  const link = useSelector((store) => store.writeProjects.link);
-  const [state, setState] = useState(link);
 
   const [input, setInput] = useState({
     websiteURL: '',
@@ -132,37 +131,43 @@ const Link = () => {
     githubInfo: '',
   });
 
-  const onChangeInput = (e) =>
-    setInput({ ...input, [e.target.name]: e.target.value });
+  const onChangeInput = (e) => setInput({ ...input, [e.target.name]: e.target.value });
   const addLink = (name) => {
     if (input[name + 'URL'] === '' || input[name + 'Info'] === '') {
       alert('빈 칸을 채워주세요.');
       return;
     }
-    for (let i = 0; i < state[name].length; i++) {
-      if (state[name][i].url === input[name + 'URL']) {
+    for (let i = 0; i < link[name].length; i++) {
+      if (link[name][i].url === input[name + 'URL']) {
         alert('이미 있는 URL입니다.');
         return;
       }
     }
-    const nextArray = [
-      ...state[name],
-      {
-        url: input[name + 'URL'],
-        info: input[name + 'Info'],
-      },
-    ];
-    setState({ ...state, [name]: nextArray });
+    dispatch(
+      changeField({
+        key: 'link',
+        value: {
+          ...link,
+          [name]: [
+            ...link[name],
+            {
+              url: input[name + 'URL'],
+              info: input[name + 'Info'],
+            },
+          ],
+        },
+      }),
+    );
     setInput({ ...input, [name + 'URL']: '', [name + 'Info']: '' });
   };
   const removeLink = (name, url) => {
-    const nextArray = state[name].filter((item) => item.url !== url);
-    setState({ ...state, [name]: nextArray });
+    dispatch(
+      changeField({
+        key: 'link',
+        value: { ...link, [name]: link[name].filter((item) => item.url !== url) },
+      }),
+    );
   };
-
-  useEffect(() => {
-    dispatch(changeField({ key: 'link', value: state }));
-  }, [state, dispatch]);
 
   return (
     <Wrapper>
@@ -177,10 +182,7 @@ const Link = () => {
         <FlexColumn>
           <Result>
             {link.website.map((item) => (
-              <Data
-                key={item.url}
-                onClick={() => removeLink('website', item.url)}
-              >
+              <Data key={item.url} onClick={() => removeLink('website', item.url)}>
                 <Url>{item.url}</Url>
                 <Info>{item.info}</Info>
               </Data>
@@ -211,10 +213,7 @@ const Link = () => {
         <FlexColumn>
           <Result>
             {link.github.map((item) => (
-              <Data
-                key={item.url}
-                onClick={() => removeLink('github', item.url)}
-              >
+              <Data key={item.url} onClick={() => removeLink('github', item.url)}>
                 <Url>{item.url}</Url>
                 <Info>{item.info}</Info>
               </Data>

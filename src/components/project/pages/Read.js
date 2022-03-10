@@ -741,7 +741,7 @@ const LoadMoreCommentButtonWrapper = styled.div`
   width: 100%;
   height: 60px;
   padding: 20px 0;
-  background-color: #a1a1a1;
+  background-color: #c9c9c9;
   margin-top: 5px;
   display: flex;
   flex-direction: center;
@@ -749,7 +749,7 @@ const LoadMoreCommentButtonWrapper = styled.div`
   transition: all 0.15s linear;
   cursor: pointer;
   &:hover {
-    background-color: #c9c9c9;
+    background-color: #a1a1a1;
   }
   svg {
     width: 20px;

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 import { AiOutlineFileAdd, AiOutlineRollback } from 'react-icons/ai';
+import styled from 'styled-components';
 import { writeProject, updateProject } from 'modules/projects/writeProjects';
 import Loading from 'components/utils/Loading';
 
@@ -46,82 +46,50 @@ const Button = styled.div`
   }
 `;
 
-const WriteButton = ({ history }) => {
+const WriteButton = ({ writeProjects, loading, history }) => {
   const dispatch = useDispatch();
-  const project = useSelector((store) => store.writeProjects);
-  const user = useSelector((store) => store.user.user);
-  const [loading, setLoading] = useState(false);
+  const serialize = (p) => {
+    const post = { ...p };
+    delete post.originalId;
+    delete post.project;
+    delete post.error;
+    delete post.catalog;
+    delete post.catalogError;
+    return post;
+  };
 
   const onPublish = () => {
-    if (!user) {
-      alert('로그인 중이 아닙니다.');
-      return;
-    }
-    if (project.title === '') {
+    if (writeProjects.title === '') {
       alert('제목을 입력해 주세요.');
       return;
     }
-    if (project.thumbnail === '') {
+    if (writeProjects.thumbnail === '') {
       alert('썸네일 이미지가 필요합니다.');
       return;
     }
-    if (project.workingPeriod.start === '') {
+    if (writeProjects.workingPeriod.start === '') {
       alert('작업 시작일을 입력해 주세요.');
       return;
     }
-    if (project.originalProjectId) {
+    if (writeProjects.originalId) {
       dispatch(
         updateProject({
-          id: project.originalProjectId,
-          project: {
-            title: project.title,
-            subTitle: project.subTitle,
-            body: project.body,
-            thumbnail: project.thumbnail,
-            images: project.images,
-            tags: project.tags,
-            update: project.update,
-            workingPeriod: project.workingPeriod,
-            moreInfo: project.moreInfo,
-            link: project.link,
-          },
+          id: writeProjects.originalId,
+          project: serialize(writeProjects),
         }),
       );
     } else {
-      dispatch(
-        writeProject({
-          title: project.title,
-          subTitle: project.subTitle,
-          body: project.body,
-          thumbnail: project.thumbnail,
-          images: project.images,
-          tags: project.tags,
-          update: project.update,
-          workingPeriod: project.workingPeriod,
-          moreInfo: project.moreInfo,
-          link: project.link,
-        }),
-      );
+      dispatch(writeProject(serialize(writeProjects)));
     }
-    setLoading(true);
   };
   const onCancel = () => {
     history.goBack();
   };
 
-  useEffect(() => {
-    if (project.projectError) {
-      alert('업로드 중 오류가 발생했습니다.');
-      setLoading(false);
-    } else if (project.project) {
-      history.push(`/project/read/${project.project._id}`);
-    }
-  }, [history, project.project, project.projectError]);
-
   if (loading)
     return (
       <div style={{ width: '50px', height: '50px' }}>
-        <Loading />
+        <Loading r="50px" />
       </div>
     );
   return (

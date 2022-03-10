@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { changeField } from 'modules/projects/writeProjects';
 
@@ -63,13 +63,8 @@ const Body = styled.textarea`
   }
 `;
 
-const Input = () => {
+const Input = ({ title, subTitle, body }) => {
   const dispatch = useDispatch();
-  const { title, subTitle, body } = useSelector(({ writeProjects }) => ({
-    title: writeProjects.title,
-    subTitle: writeProjects.subTitle,
-    body: writeProjects.body,
-  }));
 
   const onChange = (e) => {
     dispatch(changeField({ key: e.target.name, value: e.target.value }));
@@ -77,18 +72,8 @@ const Input = () => {
 
   return (
     <Wrapper>
-      <Title
-        placeholder="Title"
-        name="title"
-        value={title}
-        onChange={onChange}
-      />
-      <SubTitle
-        placeholder="SubTitle"
-        name="subTitle"
-        value={subTitle}
-        onChange={onChange}
-      />
+      <Title placeholder="Title" name="title" value={title} onChange={onChange} />
+      <SubTitle placeholder="SubTitle" name="subTitle" value={subTitle} onChange={onChange} />
       <Body placeholder="Body" name="body" value={body} onChange={onChange} />
     </Wrapper>
   );

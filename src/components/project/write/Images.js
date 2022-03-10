@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import styled from 'styled-components';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { BsImages } from 'react-icons/bs';
 import { RiImageAddLine } from 'react-icons/ri';
+import styled from 'styled-components';
+import axios from 'axios';
 import { changeField } from 'modules/projects/writeProjects';
 
 const FlexRow = styled.div`
@@ -93,47 +93,26 @@ const Input = styled.input`
   }
 `;
 
-const Images = () => {
+const Images = ({ images }) => {
   const dispatch = useDispatch();
-  const images = useSelector((store) => store.writeProjects.images);
-  const [localImages, setLocalImages] = useState(images);
 
-  const addImage = (id) => {
-    const newImages = [...localImages, id];
-    setLocalImages(newImages);
-  };
-  const removeImage = (id) => {
-    const newImages = localImages.filter((image) => image !== id);
-    setLocalImages(newImages);
-  };
-  useEffect(() => {
-    dispatch(changeField({ key: 'images', value: localImages }));
-  }, [dispatch, localImages]);
-
-  const loading = useRef(false);
   const onChange = async (e) => {
-    if (loading.current) {
-      alert('업로드중입니다.');
-      return;
-    }
-    loading.current = true;
-    console.log('이미지 업로드 시작');
     const thumbnailImage = e.target.files[0];
     const formData = new FormData();
     formData.append('image', thumbnailImage);
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/upload`, formData, {
+      .post(process.env.REACT_APP_API_IMAGE, formData, {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(`이미지 업로드 완료, ID: ${response.data}`);
-        addImage(response.data);
+        dispatch(changeField({ key: 'images', value: [...images, response.data] }));
       })
       .catch((error) => {
         alert('이미지 업로드 실패');
-        console.error(error);
       });
-    loading.current = false;
+  };
+  const removeImage = (id) => {
+    dispatch(changeField({ key: 'images', value: images.filter((image) => image !== id) }));
   };
 
   return (

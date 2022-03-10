@@ -358,7 +358,7 @@ const PostTag = styled.div`
 `;
 const PostTagsText = styled.div`
   font-size: 18px;
-  color: white;
+  color: darkgrey;
 `;
 
 const PageControlWrapper = styled.div`
