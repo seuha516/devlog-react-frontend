@@ -223,7 +223,7 @@ const BackgroundBlock = () => {
     if (ImageLoading.current) return;
     ImageLoading.current = true;
     const movePage = (page, add) => {
-      return (page + (add === 'left' ? -1 : 1) + BackgroundImage.length) % BackgroundImage.length;
+      return (page + add + BackgroundImage.length) % BackgroundImage.length;
     };
     const sleep = (t) => {
       return new Promise((resolve) => setTimeout(resolve, t));
