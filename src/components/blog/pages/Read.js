@@ -32,6 +32,9 @@ const Wrapper = styled.div`
   margin: 20px 0;
   padding: 40px 30px 10px 30px;
   background-color: white;
+  img {
+    cursor: default !important;
+  }
   @media all and (max-width: 700px) {
     padding: 40px 15px 10px 15px;
   }
