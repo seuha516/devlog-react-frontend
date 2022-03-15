@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { AiOutlineFileAdd, AiOutlineRollback } from 'react-icons/ai';
 import styled from 'styled-components';
@@ -94,4 +93,4 @@ const WriteButtons = ({ writeBlog, loading, history }) => {
   );
 };
 
-export default withRouter(WriteButtons);
+export default WriteButtons;

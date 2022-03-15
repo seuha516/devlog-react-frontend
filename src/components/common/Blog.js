@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Main from 'components/blog/pages/Main';
@@ -24,14 +24,14 @@ const Background = styled.div`
 const Blog = () => {
   return (
     <Background>
-      <Switch>
-        <Route path="/blog" exact component={Main} />
-        <Route path="/blog/list" component={List} />
-        <Route path="/blog/write" component={Write} />
-        <Route path="/blog/read/:id" component={Read} />
-        <Route path="/blog/series" component={Series} />
-        <Route component={NotFound} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/list/*" element={<List />} />
+        <Route path="/write" element={<Write />} />
+        <Route path="/read/:id" element={<Read />} />
+        <Route path="/series" element={<Series />} />
+        <Route path="/*" element={<NotFound />} />
+      </Routes>
     </Background>
   );
 };

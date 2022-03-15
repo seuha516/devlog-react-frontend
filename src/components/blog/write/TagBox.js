@@ -80,7 +80,9 @@ const TagForm = styled.form`
 `;
 const TagListBlock = styled.div`
   display: flex;
-  height: 46px;
+  flex-wrap: wrap;
+  min-height: 46px;
+  line-height: 24px;
   margin-top: 0.5rem;
   margin-bottom: 8px;
   background-color: #363636;

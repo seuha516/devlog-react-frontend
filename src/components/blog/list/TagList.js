@@ -150,12 +150,7 @@ const TagList = ({ tags, location, setPage }) => {
       </MovePageWrapper>
       <TagsWrapper>
         {tags.map((tag) => (
-          <TagWrapper
-            key={tag.name}
-            to={`/blog/list?${makeQueryString(tag.name)}`}
-            active={nowTag === tag.name ? 'on' : 'off'}
-            onClick={() => setPage(1)}
-          >
+          <TagWrapper key={tag.name} to={`/blog/list?${makeQueryString(tag.name)}`} active={nowTag === tag.name ? 'on' : 'off'} onClick={() => setPage(1)}>
             <TagName style={{ color: tag.color }}>{tag.name}</TagName>
             <TagCount>{tag.count}</TagCount>
           </TagWrapper>

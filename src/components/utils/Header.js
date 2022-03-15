@@ -227,7 +227,7 @@ const CategoryBlock = () => {
   return (
     <CategoryWrapper>
       {Categories.map((c) => (
-        <Category key={c.text} to={c.to} activeClassName="active">
+        <Category key={c.text} to={c.to} className={({ isActive }) => (isActive ? ' active' : '')}>
           {c.text}
         </Category>
       ))}
@@ -243,7 +243,7 @@ const NavbarBlock = () => {
       <NavbarIcon src="/images/Header/Navbar.png" state={state} onClick={onClick} />
       <Navbar state={state}>
         {Categories.map((c) => (
-          <NavbarCategory key={c.text} to={c.to} activeClassName="active" onClick={onClick}>
+          <NavbarCategory key={c.text} to={c.to} className={({ isActive }) => (isActive ? ' active' : '')} onClick={onClick}>
             {c.text}
           </NavbarCategory>
         ))}

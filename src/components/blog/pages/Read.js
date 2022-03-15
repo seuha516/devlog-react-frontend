@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineFundProjectionScreen, AiOutlineReload } from 'react-icons/ai';
 import { BiTrashAlt, BiLike, BiArrowBack, BiReply } from 'react-icons/bi';
@@ -9,14 +9,7 @@ import styled, { css } from 'styled-components';
 
 import 'react-quill/dist/quill.snow.css';
 import { setOriginalPost } from 'modules/blog/writeBlog';
-import {
-  initReadPost,
-  readPost,
-  removePost,
-  likePost,
-  writeCommentPost,
-  removeCommentPost,
-} from 'modules/blog/readBlog';
+import { initReadPost, readPost, removePost, likePost, writeCommentPost, removeCommentPost } from 'modules/blog/readBlog';
 
 import Error from 'components/utils/Error';
 import NotFound from 'components/utils/NotFound';
@@ -547,40 +540,39 @@ const LoadMoreCommentButtonWrapper = styled.div`
   }
 `;
 
-const Read = ({ match, history }) => {
-  const { readBlog, loading, removeLoading, likeLoading, commentLoading, user } = useSelector(
-    ({ readBlog, loading, user }) => ({
-      readBlog: readBlog,
-      loading: loading['readBlog/READ_POST'],
-      removeLoading: loading['readBlog/REMOVE_POST'],
-      likeLoading: loading['readBlog/LIKE_POST'],
-      commentLoading:
-        loading['readBlog/WRITE_COMMENT_POST'] || loading['readBlog/REMOVE_COMMENT_POST'],
-      user: user.user,
-    }),
-  );
+const Read = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { readBlog, loading, removeLoading, likeLoading, commentLoading, user } = useSelector(({ readBlog, loading, user }) => ({
+    readBlog: readBlog,
+    loading: loading['readBlog/READ_POST'],
+    removeLoading: loading['readBlog/REMOVE_POST'],
+    likeLoading: loading['readBlog/LIKE_POST'],
+    commentLoading: loading['readBlog/WRITE_COMMENT_POST'] || loading['readBlog/REMOVE_COMMENT_POST'],
+    user: user.user,
+  }));
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(initReadPost());
-    dispatch(readPost(match.params.id));
+    dispatch(readPost(id));
     return () => {
       dispatch(initReadPost());
     };
-  }, [dispatch, match.params.id]);
+  }, [dispatch, id]);
   useEffect(() => {
-    if (readBlog.remove) history.push('/blog/list');
-    if (readBlog.reload) dispatch(readPost(match.params.id));
-  }, [dispatch, history, readBlog.remove, readBlog.reload, match.params.id]);
+    if (readBlog.remove) navigate('/blog/list');
+    if (readBlog.reload) dispatch(readPost(id));
+  }, [dispatch, id, navigate, readBlog.reload, readBlog.remove]);
 
   const onRemove = () => {
     if (window.confirm('정말 이 글을 삭제하시겠습니까?')) {
-      dispatch(removePost(match.params.id));
+      dispatch(removePost(id));
     }
   };
   const onEdit = () => {
     dispatch(setOriginalPost(readBlog.post));
-    history.push('/blog/write');
+    navigate('/blog/write');
   };
 
   if (readBlog.error) {
@@ -605,7 +597,7 @@ const Read = ({ match, history }) => {
               <Loading r="24px" />
             </LikeWrapper>
           ) : (
-            <LikeWrapper onClick={() => dispatch(likePost(match.params.id))}>
+            <LikeWrapper onClick={() => dispatch(likePost(id))}>
               <BiLike />
               <div>{readBlog.post.like.length}</div>
             </LikeWrapper>
@@ -623,29 +615,15 @@ const Read = ({ match, history }) => {
             </AuthButtonWrapper>
           )}
         </AuthWrapper>
-        <CommentBlock
-          comment={readBlog.post.comment}
-          loading={loading || commentLoading}
-          user={user}
-          id={match.params.id}
-          reload={readBlog.reload}
-        />
+        <CommentBlock comment={readBlog.post.comment} loading={loading || commentLoading} user={user} id={id} reload={readBlog.reload} />
         <AroundWrapper>
           <AroundContent>
             <AroundText>이전글</AroundText>
-            {readBlog.prev ? (
-              <AroundLink to={`/blog/read/${readBlog.prev._id}`}>{readBlog.prev.title}</AroundLink>
-            ) : (
-              <AroundNull>이전글이 없습니다.</AroundNull>
-            )}
+            {readBlog.prev ? <AroundLink to={`/blog/read/${readBlog.prev._id}`}>{readBlog.prev.title}</AroundLink> : <AroundNull>이전글이 없습니다.</AroundNull>}
           </AroundContent>
           <AroundContent>
             <AroundText>다음글</AroundText>
-            {readBlog.next ? (
-              <AroundLink to={`/blog/read/${readBlog.next._id}`}>{readBlog.next.title}</AroundLink>
-            ) : (
-              <AroundNull>다음글이 없습니다.</AroundNull>
-            )}
+            {readBlog.next ? <AroundLink to={`/blog/read/${readBlog.next._id}`}>{readBlog.next.title}</AroundLink> : <AroundNull>다음글이 없습니다.</AroundNull>}
           </AroundContent>
         </AroundWrapper>
         <ListButtonWrapper to="/blog/list">
@@ -694,9 +672,7 @@ const PostBlock = ({ post }) => {
             <ProjectLinkBlock to={`/project/read/${project}`}>{project}</ProjectLinkBlock>
           </ProjectLinkRow>
           <ProjectLinkRow>
-            <ProjectLinkToSeries
-              to={`/blog/list?project=${project}`}
-            >{`${project} 관련 포스트 보기`}</ProjectLinkToSeries>
+            <ProjectLinkToSeries to={`/blog/list?project=${project}`}>{`${project} 관련 포스트 보기`}</ProjectLinkToSeries>
           </ProjectLinkRow>
         </ProjectLinkWrapper>
       )}
@@ -713,11 +689,7 @@ const PostBlock = ({ post }) => {
       {tags.length > 0 && (
         <TagsWrapper>
           {tags.map((tag) => (
-            <Link
-              to={`/blog/list/?tag=${tag.name}`}
-              key={tag._id}
-              style={{ color: tag.color, marginRight: '10px' }}
-            >
+            <Link to={`/blog/list/?tag=${tag.name}`} key={tag._id} style={{ color: tag.color, marginRight: '10px' }}>
               {`#${tag.name}`}
             </Link>
           ))}
@@ -758,9 +730,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
       case 'resetAll':
         return initialState;
       case 'resetReply':
-        return user
-          ? { ...state, replyNickname: '전승하', replyPassword: '9999', replyContent: '' }
-          : { ...state, replyNickname: '', replyPassword: '', replyContent: '' };
+        return user ? { ...state, replyNickname: '전승하', replyPassword: '9999', replyContent: '' } : { ...state, replyNickname: '', replyPassword: '', replyContent: '' };
       case 'resetRemove':
         return { ...state, removePassword: '' };
       default:
@@ -778,9 +748,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
     const year = date.getFullYear();
     const hour = date.getHours();
     const minute = date.getMinutes();
-    return `${format(year % 100)}-${format(month)}-${format(day)} ${format(hour)}:${format(
-      minute,
-    )}`;
+    return `${format(year % 100)}-${format(month)}-${format(day)} ${format(hour)}:${format(minute)}`;
   };
   const countComment = (comment) => {
     let count = 0;
@@ -924,13 +892,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
             </CommentItemInfo>
           </CommentItemWrapper>
           {i.reply.map((j) => (
-            <CommentItemWrapper
-              key={j._id}
-              style={{ width: 'calc(100% - 30px)', marginLeft: '30px' }}
-              nickname={j.nickname}
-              die={j.die}
-              reply={true}
-            >
+            <CommentItemWrapper key={j._id} style={{ width: 'calc(100% - 30px)', marginLeft: '30px' }} nickname={j.nickname} die={j.die} reply={true}>
               <CommentItemNicknameAndContent>
                 <CommentItemNickname nickname={j.nickname} die={j.die}>
                   {j.nickname}
@@ -1004,16 +966,8 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
               </div>
               <CommentInputWrapper style={{ margin: '3px 0 10px 0', width: 'calc(100% - 30px)' }}>
                 <CommentInputSmallWrapper>
-                  <CommentNickname
-                    placeholder="닉네임"
-                    value={state.replyNickname}
-                    onChange={(e) => stateDispatch({ ...e, name: 'replyNickname' })}
-                  />
-                  <CommentPassword
-                    placeholder="비밀번호 (숫자 4 ~ 6자리)"
-                    value={state.replyPassword}
-                    onChange={(e) => stateDispatch({ ...e, name: 'replyPassword' })}
-                  />
+                  <CommentNickname placeholder="닉네임" value={state.replyNickname} onChange={(e) => stateDispatch({ ...e, name: 'replyNickname' })} />
+                  <CommentPassword placeholder="비밀번호 (숫자 4 ~ 6자리)" value={state.replyPassword} onChange={(e) => stateDispatch({ ...e, name: 'replyPassword' })} />
                 </CommentInputSmallWrapper>
                 <CommentInputSmallWrapper>
                   <CommentInputContent
@@ -1024,9 +978,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
                       if (e.key === 'Enter') onClickWriteComment(i._id);
                     }}
                   />
-                  <CommentInputWriteButton onClick={() => onClickWriteComment(i._id)}>
-                    {loading ? <Loading r="30px" /> : <BsFillPencilFill />}
-                  </CommentInputWriteButton>
+                  <CommentInputWriteButton onClick={() => onClickWriteComment(i._id)}>{loading ? <Loading r="30px" /> : <BsFillPencilFill />}</CommentInputWriteButton>
                 </CommentInputSmallWrapper>
               </CommentInputWrapper>
             </div>
@@ -1051,16 +1003,8 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
       )}
       <CommentInputWrapper>
         <CommentInputSmallWrapper>
-          <CommentNickname
-            placeholder="닉네임"
-            value={state.nickname}
-            onChange={(e) => stateDispatch({ ...e, name: 'nickname' })}
-          />
-          <CommentPassword
-            placeholder="비밀번호 (숫자 4 ~ 6자리)"
-            value={state.password}
-            onChange={(e) => stateDispatch({ ...e, name: 'password' })}
-          />
+          <CommentNickname placeholder="닉네임" value={state.nickname} onChange={(e) => stateDispatch({ ...e, name: 'nickname' })} />
+          <CommentPassword placeholder="비밀번호 (숫자 4 ~ 6자리)" value={state.password} onChange={(e) => stateDispatch({ ...e, name: 'password' })} />
         </CommentInputSmallWrapper>
         <CommentInputSmallWrapper>
           <CommentInputContent
@@ -1071,9 +1015,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
               if (e.key === 'Enter') onClickWriteComment('');
             }}
           />
-          <CommentInputWriteButton onClick={() => onClickWriteComment('')}>
-            {loading ? <Loading r="30px" /> : <BsFillPencilFill />}
-          </CommentInputWriteButton>
+          <CommentInputWriteButton onClick={() => onClickWriteComment('')}>{loading ? <Loading r="30px" /> : <BsFillPencilFill />}</CommentInputWriteButton>
         </CommentInputSmallWrapper>
       </CommentInputWrapper>
     </CommentWrapper>

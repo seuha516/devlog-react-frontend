@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { login } from 'modules/user';
@@ -70,7 +71,8 @@ const LoginButton = styled.button`
 
 const reducer = (state, action) => ({ ...state, [action.name]: action.value });
 
-const Login = ({ history }) => {
+const Login = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, loading } = useSelector(
     ({ user, loading }) => ({
@@ -101,14 +103,14 @@ const Login = ({ history }) => {
   }, []);
   useEffect(() => {
     if (user) {
-      history.push('/');
+      navigate('/');
       try {
         localStorage.setItem('user', JSON.stringify(user));
       } catch (e) {
         console.log('localStorage is not working');
       }
     }
-  }, [history, user]);
+  }, [navigate, user]);
   return (
     <Background>
       {loading ? (

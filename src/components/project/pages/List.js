@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { listProject } from 'modules/projects/listProjects';
 
 import Error from 'components/utils/Error';
@@ -7,17 +8,16 @@ import Loading from 'components/utils/Loading';
 import TagList from '../list/TagList';
 import ProjectList from '../list/ProjectList';
 
-const List = ({ location }) => {
-  const { projects, projectCount, tags, error, loading, user } = useSelector(
-    ({ listProjects, loading, user }) => ({
-      projects: listProjects.projects,
-      projectCount: listProjects.projectCount,
-      tags: listProjects.tags,
-      error: listProjects.error,
-      loading: loading['listProjects/LIST_PROJECT'],
-      user: user.user,
-    }),
-  );
+const List = () => {
+  const location = useLocation();
+  const { projects, projectCount, tags, error, loading, user } = useSelector(({ listProjects, loading, user }) => ({
+    projects: listProjects.projects,
+    projectCount: listProjects.projectCount,
+    tags: listProjects.tags,
+    error: listProjects.error,
+    loading: loading['listProjects/LIST_PROJECT'],
+    user: user.user,
+  }));
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   useEffect(() => {
@@ -43,15 +43,7 @@ const List = ({ location }) => {
     <>
       {page === 0
         ? tags && <TagList tags={tags} location={location} setPage={setPage} />
-        : projects && (
-            <ProjectList
-              projects={projects}
-              projectCount={projectCount}
-              location={location}
-              user={user}
-              setPage={setPage}
-            />
-          )}
+        : projects && <ProjectList projects={projects} projectCount={projectCount} location={location} user={user} setPage={setPage} />}
     </>
   );
 };

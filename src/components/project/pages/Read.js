@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiFillGithub, AiOutlineEdit, AiOutlineDelete, AiOutlineReload } from 'react-icons/ai';
 import { BiLink, BiCodeBlock, BiTimer, BiLike, BiArrowBack, BiReply } from 'react-icons/bi';
@@ -11,14 +11,7 @@ import { GrDocumentUpdate } from 'react-icons/gr';
 import styled, { css } from 'styled-components';
 
 import { setOriginalProject } from 'modules/projects/writeProjects';
-import {
-  initReadProject,
-  readProject,
-  removeProject,
-  likeProject,
-  writeCommentProject,
-  removeCommentProject,
-} from 'modules/projects/readProjects';
+import { initReadProject, readProject, removeProject, likeProject, writeCommentProject, removeCommentProject } from 'modules/projects/readProjects';
 
 import Error from 'components/utils/Error';
 import NotFound from 'components/utils/NotFound';
@@ -761,32 +754,30 @@ const LoadMoreCommentButtonWrapper = styled.div`
   }
 `;
 
-const Read = ({ match, history }) => {
-  const { readProjects, loading, removeLoading, likeLoading, commentLoading, user } = useSelector(
-    ({ readProjects, loading, user }) => ({
-      readProjects: readProjects,
-      loading: loading['readProjects/READ_PROJECT'],
-      removeLoading: loading['readProjects/REMOVE_PROJECT'],
-      likeLoading: loading['readProjects/LIKE_PROJECT'],
-      commentLoading:
-        loading['readProjects/WRITE_COMMENT_PROJECT'] ||
-        loading['readProjects/REMOVE_COMMENT_PROJECT'],
-      user: user.user,
-    }),
-  );
+const Read = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { readProjects, loading, removeLoading, likeLoading, commentLoading, user } = useSelector(({ readProjects, loading, user }) => ({
+    readProjects: readProjects,
+    loading: loading['readProjects/READ_PROJECT'],
+    removeLoading: loading['readProjects/REMOVE_PROJECT'],
+    likeLoading: loading['readProjects/LIKE_PROJECT'],
+    commentLoading: loading['readProjects/WRITE_COMMENT_PROJECT'] || loading['readProjects/REMOVE_COMMENT_PROJECT'],
+    user: user.user,
+  }));
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(initReadProject());
-    dispatch(readProject(match.params.id));
+    dispatch(readProject(id));
     return () => {
       dispatch(initReadProject());
     };
-  }, [dispatch, match.params.id]);
+  }, [dispatch, id]);
   useEffect(() => {
-    if (readProjects.remove) history.push('/project/list');
-    if (readProjects.reload) dispatch(readProject(match.params.id));
-  }, [dispatch, history, readProjects.remove, readProjects.reload, match.params.id]);
+    if (readProjects.remove) navigate('/project/list');
+    if (readProjects.reload) dispatch(readProject(id));
+  }, [dispatch, id, navigate, readProjects.reload, readProjects.remove]);
 
   const MoreInfocolor = {
     'Group Project': '#0b6412',
@@ -803,7 +794,7 @@ const Read = ({ match, history }) => {
   };
   const onEdit = () => {
     dispatch(setOriginalProject(readProjects.project));
-    history.push('/project/write');
+    navigate('/project/write');
   };
 
   if (readProjects.error) {
@@ -828,21 +819,12 @@ const Read = ({ match, history }) => {
         </HeaderWrapper>
         <ReadWrapper>
           <ThumbnailWrapper>
-            <ThumbnailImage
-              src={
-                readProjects.project.thumbnail === ''
-                  ? '/images/Project/Default.png'
-                  : `${process.env.REACT_APP_API_IMAGE}/${readProjects.project.thumbnail}`
-              }
-              alt="thumbnail"
-            />
+            <ThumbnailImage src={readProjects.project.thumbnail === '' ? '/images/Project/Default.png' : `${process.env.REACT_APP_API_IMAGE}/${readProjects.project.thumbnail}`} alt="thumbnail" />
           </ThumbnailWrapper>
           <TextWrapper>
             <TextTitle>{readProjects.project.title}</TextTitle>
             <TextSubTitle>{readProjects.project.subTitle}</TextSubTitle>
-            {readProjects.project.body !== '' && (
-              <TextBody defaultValue={readProjects.project.body} readOnly />
-            )}
+            {readProjects.project.body !== '' && <TextBody defaultValue={readProjects.project.body} readOnly />}
           </TextWrapper>
           <ProjectLinkWrapper>
             <ProjectLinkTitle>
@@ -850,12 +832,7 @@ const Read = ({ match, history }) => {
             </ProjectLinkTitle>
             <ProjectLinkResult>
               {readProjects.project.link.website.map((item) => (
-                <ProjectLinkData
-                  key={item.url}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <ProjectLinkData key={item.url} href={item.url} target="_blank" rel="noopener noreferrer">
                   <ProjectLinkDataIconWrapper>
                     <BiCodeBlock />
                     {item.info}
@@ -863,12 +840,7 @@ const Read = ({ match, history }) => {
                 </ProjectLinkData>
               ))}
               {readProjects.project.link.github.map((item) => (
-                <ProjectLinkData
-                  key={item.url}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <ProjectLinkData key={item.url} href={item.url} target="_blank" rel="noopener noreferrer">
                   <ProjectLinkDataIconWrapper>
                     <AiFillGithub />
                     {item.info}
@@ -890,20 +862,12 @@ const Read = ({ match, history }) => {
               </ImagesTitle>
               <ImagesGallery>
                 {readProjects.project.images.map((item) => (
-                  <ImagesImage
-                    key={item}
-                    src={`${process.env.REACT_APP_API_IMAGE}/${item}`}
-                    alt="projectImage"
-                    onClick={() => setImagePopup(item)}
-                  />
+                  <ImagesImage key={item} src={`${process.env.REACT_APP_API_IMAGE}/${item}`} alt="projectImage" onClick={() => setImagePopup(item)} />
                 ))}
               </ImagesGallery>
               {imagePopUp && (
                 <ImagesPopupBackground onClick={() => setImagePopup(null)}>
-                  <ImagesPopupImage
-                    src={`${process.env.REACT_APP_API_IMAGE}/${imagePopUp}`}
-                    alt="PopupImage"
-                  />
+                  <ImagesPopupImage src={`${process.env.REACT_APP_API_IMAGE}/${imagePopUp}`} alt="PopupImage" />
                 </ImagesPopupBackground>
               )}
             </ImagesWrapper>
@@ -936,9 +900,7 @@ const Read = ({ match, history }) => {
                 </>
               ) : (
                 <>
-                  <WorkingPeriodDate style={{ width: '150px' }}>
-                    {`${readProjects.project.workingPeriod.start} ...`}
-                  </WorkingPeriodDate>
+                  <WorkingPeriodDate style={{ width: '150px' }}>{`${readProjects.project.workingPeriod.start} ...`}</WorkingPeriodDate>
                 </>
               )}
             </WorkingPeriodDateWrapper>
@@ -960,11 +922,7 @@ const Read = ({ match, history }) => {
               </TagsTitle>
               <TagsTagBox>
                 {readProjects.project.tags.map((tag) => (
-                  <Tag
-                    key={tag.name}
-                    style={{ color: tag.color }}
-                    to={`/project/list?tag=${tag.name}`}
-                  >
+                  <Tag key={tag.name} style={{ color: tag.color }} to={`/project/list?tag=${tag.name}`}>
                     {`#${tag.name}`}
                   </Tag>
                 ))}
@@ -995,13 +953,7 @@ const Read = ({ match, history }) => {
               </AuthButtonWrapper>
             )}
           </AuthWrapper>
-          <CommentBlock
-            comment={readProjects.project.comment}
-            loading={loading || commentLoading}
-            user={user}
-            id={readProjects.project._id}
-            reload={readProjects.reload}
-          />
+          <CommentBlock comment={readProjects.project.comment} loading={loading || commentLoading} user={user} id={readProjects.project._id} reload={readProjects.reload} />
           <ListButtonWrapper to="/project/list">
             <BiArrowBack />
             List
@@ -1046,9 +998,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
       case 'resetAll':
         return initialState;
       case 'resetReply':
-        return user
-          ? { ...state, replyNickname: '전승하', replyPassword: '9999', replyContent: '' }
-          : { ...state, replyNickname: '', replyPassword: '', replyContent: '' };
+        return user ? { ...state, replyNickname: '전승하', replyPassword: '9999', replyContent: '' } : { ...state, replyNickname: '', replyPassword: '', replyContent: '' };
       case 'resetRemove':
         return { ...state, removePassword: '' };
       default:
@@ -1066,9 +1016,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
     const year = date.getFullYear();
     const hour = date.getHours();
     const minute = date.getMinutes();
-    return `${format(year % 100)}-${format(month)}-${format(day)} ${format(hour)}:${format(
-      minute,
-    )}`;
+    return `${format(year % 100)}-${format(month)}-${format(day)} ${format(hour)}:${format(minute)}`;
   };
   const countComment = (comment) => {
     let count = 0;
@@ -1212,13 +1160,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
             </CommentItemInfo>
           </CommentItemWrapper>
           {i.reply.map((j) => (
-            <CommentItemWrapper
-              key={j._id}
-              style={{ width: 'calc(100% - 30px)', marginLeft: '30px' }}
-              nickname={j.nickname}
-              die={j.die}
-              reply={true}
-            >
+            <CommentItemWrapper key={j._id} style={{ width: 'calc(100% - 30px)', marginLeft: '30px' }} nickname={j.nickname} die={j.die} reply={true}>
               <CommentItemNicknameAndContent>
                 <CommentItemNickname nickname={j.nickname} die={j.die}>
                   {j.nickname}
@@ -1292,16 +1234,8 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
               </div>
               <CommentInputWrapper style={{ margin: '3px 0 10px 0', width: 'calc(100% - 30px)' }}>
                 <CommentInputSmallWrapper>
-                  <CommentNickname
-                    placeholder="닉네임"
-                    value={state.replyNickname}
-                    onChange={(e) => stateDispatch({ ...e, name: 'replyNickname' })}
-                  />
-                  <CommentPassword
-                    placeholder="비밀번호 (숫자 4 ~ 6자리)"
-                    value={state.replyPassword}
-                    onChange={(e) => stateDispatch({ ...e, name: 'replyPassword' })}
-                  />
+                  <CommentNickname placeholder="닉네임" value={state.replyNickname} onChange={(e) => stateDispatch({ ...e, name: 'replyNickname' })} />
+                  <CommentPassword placeholder="비밀번호 (숫자 4 ~ 6자리)" value={state.replyPassword} onChange={(e) => stateDispatch({ ...e, name: 'replyPassword' })} />
                 </CommentInputSmallWrapper>
                 <CommentInputSmallWrapper>
                   <CommentInputContent
@@ -1312,9 +1246,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
                       if (e.key === 'Enter') onClickWriteComment(i._id);
                     }}
                   />
-                  <CommentInputWriteButton onClick={() => onClickWriteComment(i._id)}>
-                    {loading ? <Loading r="30px" /> : <BsFillPencilFill />}
-                  </CommentInputWriteButton>
+                  <CommentInputWriteButton onClick={() => onClickWriteComment(i._id)}>{loading ? <Loading r="30px" /> : <BsFillPencilFill />}</CommentInputWriteButton>
                 </CommentInputSmallWrapper>
               </CommentInputWrapper>
             </div>
@@ -1339,16 +1271,8 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
       )}
       <CommentInputWrapper>
         <CommentInputSmallWrapper>
-          <CommentNickname
-            placeholder="닉네임"
-            value={state.nickname}
-            onChange={(e) => stateDispatch({ ...e, name: 'nickname' })}
-          />
-          <CommentPassword
-            placeholder="비밀번호 (숫자 4 ~ 6자리)"
-            value={state.password}
-            onChange={(e) => stateDispatch({ ...e, name: 'password' })}
-          />
+          <CommentNickname placeholder="닉네임" value={state.nickname} onChange={(e) => stateDispatch({ ...e, name: 'nickname' })} />
+          <CommentPassword placeholder="비밀번호 (숫자 4 ~ 6자리)" value={state.password} onChange={(e) => stateDispatch({ ...e, name: 'password' })} />
         </CommentInputSmallWrapper>
         <CommentInputSmallWrapper>
           <CommentInputContent
@@ -1359,9 +1283,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
               if (e.key === 'Enter') onClickWriteComment('');
             }}
           />
-          <CommentInputWriteButton onClick={() => onClickWriteComment('')}>
-            {loading ? <Loading r="30px" /> : <BsFillPencilFill />}
-          </CommentInputWriteButton>
+          <CommentInputWriteButton onClick={() => onClickWriteComment('')}>{loading ? <Loading r="30px" /> : <BsFillPencilFill />}</CommentInputWriteButton>
         </CommentInputSmallWrapper>
       </CommentInputWrapper>
     </CommentWrapper>

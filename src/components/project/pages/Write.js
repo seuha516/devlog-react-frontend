@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
@@ -74,7 +75,8 @@ const HeaderRectangle = styled.div`
   background-color: #b4b4b4de;
 `;
 
-const Write = ({ history }) => {
+const Write = () => {
+  const navigate = useNavigate();
   const { writeProjects, loading, user } = useSelector(({ writeProjects, loading, user }) => ({
     writeProjects: writeProjects,
     loading: loading['writeProjects/WRITE_PROJECT'] || loading['writeProjects/UPDATE_PROJECT'],
@@ -93,12 +95,12 @@ const Write = ({ history }) => {
   }, [dispatch]);
   useEffect(() => {
     if (!user) {
-      history.push(`/project/list`);
+      navigate(`/project/list`);
     }
     if (writeProjects.project) {
-      history.push(`/project/read/${writeProjects.project._id}`);
+      navigate(`/project/read/${writeProjects.project._id}`);
     }
-  }, [history, user, writeProjects.project]);
+  }, [navigate, user, writeProjects.project]);
 
   return (
     <Wrapper>
@@ -111,11 +113,7 @@ const Write = ({ history }) => {
       </HeaderWrapper>
       <WriteWrapper>
         <Thumbnail thumbnail={writeProjects.thumbnail} />
-        <Input
-          title={writeProjects.title}
-          subTitle={writeProjects.subTitle}
-          body={writeProjects.body}
-        />
+        <Input title={writeProjects.title} subTitle={writeProjects.subTitle} body={writeProjects.body} />
         <Images images={writeProjects.images} />
         <Tags tags={writeProjects.tags} tagList={writeProjects.catalog.tags} />
         <Update update={writeProjects.update} />

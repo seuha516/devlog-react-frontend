@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Main = ({ history }) => {
+const Main = () => {
+  const navigate = useNavigate();
   useEffect(() => {
-    history.push('/blog/list');
-  }, [history]);
+    navigate('/blog/list');
+  }, [navigate]);
   return <div style={{ width: '100%', height: 'calc(100vh - 62px)' }} />;
 };
 

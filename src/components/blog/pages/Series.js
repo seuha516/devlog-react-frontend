@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { BiTimeFive, BiArrowBack } from 'react-icons/bi';
 import styled from 'styled-components';
@@ -305,7 +305,8 @@ const PageControlNumber = styled(Link)`
   }
 `;
 
-const Series = ({ location }) => {
+const Series = () => {
+  const location = useLocation();
   const { posts, postCount, error, loading } = useSelector(({ listBlog, loading }) => ({
     posts: listBlog.posts,
     postCount: listBlog.postCount,
@@ -393,20 +394,12 @@ const Series = ({ location }) => {
                 <PostItemWrapper key={post._id} to={`/blog/read/${post._id}`}>
                   <PostNumber>{addZero(post.seriesNumber)}</PostNumber>
                   <PostThumbnailWrapper>
-                    <PostThumbnail
-                      src={
-                        post.thumbnail === ''
-                          ? '/images/Blog/Default.png'
-                          : `${process.env.REACT_APP_API_IMAGE}/${post.thumbnail}`
-                      }
-                    />
+                    <PostThumbnail src={post.thumbnail === '' ? '/images/Blog/Default.png' : `${process.env.REACT_APP_API_IMAGE}/${post.thumbnail}`} />
                   </PostThumbnailWrapper>
                   <PostTextWrapper>
                     <PostTitleAndDate>
                       <PostTitle>{post.title}</PostTitle>
-                      <PostPublishedDate>
-                        {dateToString(new Date(post.date.publishedDate))}
-                      </PostPublishedDate>
+                      <PostPublishedDate>{dateToString(new Date(post.date.publishedDate))}</PostPublishedDate>
                     </PostTitleAndDate>
                     <PostSubTitle>{post.subTitle}</PostSubTitle>
                   </PostTextWrapper>
@@ -418,10 +411,7 @@ const Series = ({ location }) => {
           <PageControlWrapper>
             <PageControl>
               {nowPage > 1 && postCount > 0 && (
-                <PageControlButton
-                  to={`/blog/series?${makeQueryString({ series: series, sort: sort, page: 1 })}`}
-                  style={{ marginRight: '5px' }}
-                >{`<<`}</PageControlButton>
+                <PageControlButton to={`/blog/series?${makeQueryString({ series: series, sort: sort, page: 1 })}`} style={{ marginRight: '5px' }}>{`<<`}</PageControlButton>
               )}
               {nowPage > 1 && postCount > 0 && (
                 <PageControlButton
@@ -435,11 +425,7 @@ const Series = ({ location }) => {
               )}
               <PageControlNumberWrapper>
                 {setList(nowPage - 2, nowPage + 2).map((n) => (
-                  <PageControlNumber
-                    key={n}
-                    to={`/blog/series?${makeQueryString({ series: series, sort: sort, page: n })}`}
-                    style={n === nowPage ? { background: 'black', color: 'white' } : {}}
-                  >
+                  <PageControlNumber key={n} to={`/blog/series?${makeQueryString({ series: series, sort: sort, page: n })}`} style={n === nowPage ? { background: 'black', color: 'white' } : {}}>
                     {n}
                   </PageControlNumber>
                 ))}

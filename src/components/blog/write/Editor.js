@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Quill } from 'react-quill';
 import ImageUploader from 'quill-image-uploader';
-import ImageResize from 'quill-image-resize-module';
+import ImageResize from '@looop/quill-image-resize-module-react';
 import 'react-quill/dist/quill.snow.css';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
@@ -39,7 +39,7 @@ const SubTitleInput = styled.input`
 `;
 const QuillWrapper = styled.div`
   .ql-editor {
-    padding: 15px;
+    padding: 20px 15px 100px 15px;
     min-height: 320px;
     max-height: 450px;
   }
@@ -70,8 +70,8 @@ const Editor = ({ title, subTitle, body }) => {
   );
 };
 const BodyBlock = ({ onChangeField, body }) => {
-  const quillElement = useRef(null); // Quill을 적용할 DivElement를 설정
-  const quillInstance = useRef(null); // Quill 인스턴스를 설정
+  const quillElement = useRef(null);
+  const quillInstance = useRef(null);
   hljs.configure({
     languages: ['javascript', 'python', 'c++'],
   });
@@ -122,7 +122,7 @@ const BodyBlock = ({ onChangeField, body }) => {
           border: 'none',
           color: 'white',
         },
-        modules: ['Resize', 'DisplaySize', 'Toolbar'],
+        modules: ['Resize', 'DisplaySize'],
       },
     };
     const formats = [

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
@@ -30,7 +31,8 @@ const WriteWrapper = styled.div`
   }
 `;
 
-const Write = ({ history }) => {
+const Write = () => {
+  const navigate = useNavigate();
   const { writeBlog, loading, catalogLoading, user } = useSelector(({ writeBlog, loading, user }) => ({
     writeBlog: writeBlog,
     loading: loading['writeBlog/WRITE_POST'] || loading['writeBlog/UPDATE_POST'],
@@ -50,12 +52,12 @@ const Write = ({ history }) => {
   }, [dispatch]);
   useEffect(() => {
     if (!user) {
-      history.push(`/blog/list`);
+      navigate(`/blog/list`);
     }
     if (writeBlog.post) {
-      history.push(`/blog/read/${writeBlog.post._id}`);
+      navigate(`/blog/read/${writeBlog.post._id}`);
     }
-  }, [history, writeBlog.post, user]);
+  }, [navigate, writeBlog.post, user]);
 
   return (
     <WriteWrapper>

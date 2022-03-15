@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
@@ -40,14 +40,14 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <Header />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/project" component={Project} />
-        <Route path="/blog" component={Blog} />
-        <Route path="/login" component={Login} />
-        <Route component={NotFound} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/project/*" element={<Project />} />
+        <Route path="/blog/*" element={<Blog />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/*" element={<NotFound />} />
+      </Routes>
       <Buttons />
       <Footer />
     </BrowserRouter>
