@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AiOutlineFileAdd, AiOutlineRollback } from 'react-icons/ai';
 import styled from 'styled-components';
@@ -46,6 +47,7 @@ const Button = styled.div`
 `;
 
 const WriteButton = ({ writeProjects, loading, history }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const serialize = (p) => {
     const post = { ...p };
@@ -82,7 +84,7 @@ const WriteButton = ({ writeProjects, loading, history }) => {
     }
   };
   const onCancel = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   if (loading)
