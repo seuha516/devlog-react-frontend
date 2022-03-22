@@ -45,7 +45,7 @@ const Button = styled.div`
   }
 `;
 
-const WriteButtons = ({ writeBlog, loading, history }) => {
+const WriteButtons = ({ writeBlog, loading }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const serialize = (p) => {
