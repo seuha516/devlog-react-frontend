@@ -1,6 +1,6 @@
 # Devlog
 개발 블로그 웹사이트
-- [Link To Website](https://seungha-devlog.com)
+- [Link To Website](https://devlog-seungha.netlify.app/)
 
 ## Example
 <img src="https://user-images.githubusercontent.com/79067549/116699209-41776e00-aa00-11eb-8f78-6e77aaf653cd.png" width="50%" height="50%">
