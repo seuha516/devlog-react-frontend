@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
-import styled from 'styled-components';
+import React, { useState, useRef, useEffect } from "react";
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
+import styled from "styled-components";
 
 const FlexRow = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   background: #232323;
-  background-image: url('/images/Common/Background2.jpg');
+  background-image: url("/images/Common/Background2.jpg");
 `;
 const Wrapper = styled(FlexColumn)`
   width: min(100%, 1200px);
@@ -67,7 +67,9 @@ const NextButton = styled(FlexRow)`
   position: absolute;
   margin-top: clamp(150px, calc(200px - 7.5vw), 175px);
   margin-left: ${(props) =>
-    props.position === 'left' ? '0' : 'calc(min(100%, 1200px) - 40px - clamp(30px, 9vw, 60px))'};
+    props.position === "left"
+      ? "0"
+      : "calc(min(100%, 1200px) - 40px - clamp(30px, 9vw, 60px))"};
   z-index: 20;
   cursor: pointer;
   svg {
@@ -76,7 +78,9 @@ const NextButton = styled(FlexRow)`
   }
   @media all and (max-width: 700px) {
     margin-left: ${(props) =>
-      props.position === 'left' ? '0' : 'calc(min(100%, 1200px) - 20px - clamp(30px, 9vw, 60px))'};
+      props.position === "left"
+        ? "0"
+        : "calc(min(100%, 1200px) - 20px - clamp(30px, 9vw, 60px))"};
   }
 `;
 const TextWrapper = styled.div`
@@ -85,7 +89,7 @@ const TextWrapper = styled.div`
   background-color: #101010;
 `;
 const Text = styled.div`
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
   font-size: 40px;
   line-height: 60px;
   align-self: flex-start;
@@ -123,13 +127,13 @@ const InfoText = styled(FlexColumn)`
   align-items: flex-start;
 `;
 const Name = styled.div`
-  font-family: 'Noto Serif KR', serif;
+  font-family: "Noto Serif KR", serif;
   font-size: 50px;
   margin-bottom: 35px;
 `;
 const Information = styled.div`
   font-size: 20px;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   line-height: 32px;
   @media all and (max-width: 335px) {
     letter-spacing: -0.3px;
@@ -165,44 +169,44 @@ const LinkIcon = styled.img`
 `;
 
 const BackgroundImage = [
-  { img: '/images/About/Back/Back1.jpg', y: '77.5%' },
-  { img: '/images/About/Back/Back2.jpg', y: '62.5%' },
-  { img: '/images/About/Back/Back3.jpg', y: '70%' },
-  { img: '/images/About/Back/Back4.jpg', y: '40%' },
+  { img: "/images/About/Back/Back1.jpg", y: "77.5%" },
+  { img: "/images/About/Back/Back2.jpg", y: "62.5%" },
+  { img: "/images/About/Back/Back3.jpg", y: "70%" },
+  { img: "/images/About/Back/Back4.jpg", y: "40%" },
 ];
 const LinkItem = [
   {
-    img: '/images/About/Link/Github.png',
-    link: 'https://github.com/seuha516',
+    img: "/images/About/Link/Github.png",
+    link: "https://github.com/seuha516",
   },
   {
-    img: '/images/About/Link/Facebook.png',
-    link: 'https://www.facebook.com/seuha516',
+    img: "/images/About/Link/Facebook.png",
+    link: "https://www.facebook.com/seuha516",
   },
   {
-    img: '/images/About/Link/Instagram.png',
-    link: 'https://www.instagram.com/jeon.seungha',
+    img: "/images/About/Link/Instagram.png",
+    link: "https://www.instagram.com/jeon_seungha",
   },
   {
-    img: '/images/About/Link/Boj.png',
-    link: 'https://www.acmicpc.net/user/seuha516',
+    img: "/images/About/Link/Boj.png",
+    link: "https://www.acmicpc.net/user/seuha516",
   },
   {
-    img: '/images/About/Link/Solvedac.png',
-    link: 'https://solved.ac/profile/seuha516',
+    img: "/images/About/Link/Solvedac.png",
+    link: "https://solved.ac/profile/seuha516",
   },
   {
-    img: '/images/About/Link/Codeforce.png',
-    link: 'https://codeforces.com/profile/seuha516',
+    img: "/images/About/Link/Codeforce.png",
+    link: "https://codeforces.com/profile/seuha516",
   },
 ];
 
 const About = () => {
   useEffect(() => {
-    const htmlTitle = document.querySelector('title');
-    htmlTitle.innerHTML = 'Devlog - About';
+    const htmlTitle = document.querySelector("title");
+    htmlTitle.innerHTML = "Devlog - About";
     return () => {
-      htmlTitle.innerHTML = 'Devlog';
+      htmlTitle.innerHTML = "Devlog";
     };
   }, []);
   return (
@@ -232,8 +236,8 @@ const BackgroundBlock = () => {
     setBackgroundNumber([backgroundNumber[0], nextImage]);
     FrontImage.current.animate([{ opacity: 1 }, { opacity: 0 }], {
       duration: 500,
-      easing: 'linear',
-      fill: 'forwards',
+      easing: "linear",
+      fill: "forwards",
     });
     await sleep(700);
     setBackgroundNumber([nextImage, nextImage]);
@@ -255,8 +259,16 @@ const BackgroundBlock = () => {
         defaultY={BackgroundImage[backgroundNumber[1]].y}
         zIndex="1"
       />
-      <BackgroundImg style={{ display: 'none' }} src={BackgroundImage[2].img} alt="Background" />
-      <BackgroundImg style={{ display: 'none' }} src={BackgroundImage[3].img} alt="Background" />
+      <BackgroundImg
+        style={{ display: "none" }}
+        src={BackgroundImage[2].img}
+        alt="Background"
+      />
+      <BackgroundImg
+        style={{ display: "none" }}
+        src={BackgroundImage[3].img}
+        alt="Background"
+      />
       <FakeImg />
       <NextButton position="left" onClick={() => NextPage(-1)}>
         <MdKeyboardArrowLeft />
@@ -277,7 +289,7 @@ const BackgroundBlock = () => {
 const InfoBlock = () => {
   return (
     <InfoWrapper>
-      <ProfileImage src={'/images/About/Profile/Profile1.jpg'} alt="Profile" />
+      <ProfileImage src={"/images/About/Profile/Profile1.jpg"} alt="Profile" />
       <InfoText>
         <Name>전승하</Name>
         <Information>
@@ -300,7 +312,12 @@ const LinkBlock = () => {
   return (
     <LinkWrapper>
       {LinkItem.map((item) => (
-        <a key={item.link} href={item.link} target="_blank" rel="noopener noreferrer">
+        <a
+          key={item.link}
+          href={item.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <LinkIcon src={item.img} alt={item.link} />
         </a>
       ))}

@@ -1,8 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { AiFillGithub, AiFillFacebook, AiFillInstagram } from 'react-icons/ai';
-import styled from 'styled-components';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { AiFillGithub, AiFillFacebook, AiFillInstagram } from "react-icons/ai";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -30,7 +30,7 @@ const Flexbox = styled.div`
 `;
 const URL = styled.div`
   font-size: 20px;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   @media all and (max-width: 1024px) {
     font-size: 18px;
   }
@@ -40,7 +40,7 @@ const URL = styled.div`
 `;
 const Name = styled.div`
   font-size: 20px;
-  font-family: 'Noto Serif KR', serif;
+  font-family: "Noto Serif KR", serif;
   @media all and (max-width: 1024px) {
     font-size: 18px;
   }
@@ -50,7 +50,7 @@ const Name = styled.div`
 `;
 const Login = styled(Link)`
   font-size: 18px;
-  font-family: 'Noto Serif KR', serif;
+  font-family: "Noto Serif KR", serif;
   color: gray;
   margin-top: 0.5px;
   margin-left: 20px;
@@ -105,7 +105,7 @@ const Icon = styled.a`
 `;
 const Info = styled.div`
   font-size: 16px;
-  font-family: 'Nanum Myeongjo', serif;
+  font-family: "Nanum Myeongjo", serif;
   margin-top: 3px;
   margin-left: 15px;
   @media all and (max-width: 1024px) {
@@ -128,13 +128,25 @@ const Footer = () => {
       <Flexbox>
         <URL>seungha-devlog.com</URL>
         <Flexbox>
-          <Icon href="https://github.com/seuha516" target="_blank" rel="noopener noreferrer">
+          <Icon
+            href="https://github.com/seuha516"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <AiFillGithub />
           </Icon>
-          <Icon href="https://www.facebook.com/seuha516" target="_blank" rel="noopener noreferrer">
+          <Icon
+            href="https://www.facebook.com/seuha516"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <AiFillFacebook />
           </Icon>
-          <Icon href="https://www.instagram.com/jeon.seungha/" target="_blank" rel="noopener noreferrer">
+          <Icon
+            href="https://www.instagram.com/jeon_seungha/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <AiFillInstagram />
           </Icon>
         </Flexbox>
