@@ -702,10 +702,10 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
   const dispatch = useDispatch();
   const initialState = {
     nickname: user ? '전승하' : '',
-    password: user ? '9999' : '',
+    password: '',
     content: '',
     replyNickname: user ? '전승하' : '',
-    replyPassword: user ? '9999' : '',
+    replyPassword: '',
     replyContent: '',
     removePassword: '',
   };
@@ -730,7 +730,7 @@ const CommentBlock = ({ comment, loading, user, id, reload }) => {
       case 'resetAll':
         return initialState;
       case 'resetReply':
-        return user ? { ...state, replyNickname: '전승하', replyPassword: '9999', replyContent: '' } : { ...state, replyNickname: '', replyPassword: '', replyContent: '' };
+        return user ? { ...state, replyNickname: '전승하', replyPassword: '', replyContent: '' } : { ...state, replyNickname: '', replyPassword: '', replyContent: '' };
       case 'resetRemove':
         return { ...state, removePassword: '' };
       default:
