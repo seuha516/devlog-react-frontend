@@ -6,6 +6,7 @@ import { BiTrashAlt, BiLike, BiArrowBack, BiReply } from 'react-icons/bi';
 import { BsBook, BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import { RiBallPenLine } from 'react-icons/ri';
 import styled, { css } from 'styled-components';
+import DOMPurify from 'dompurify';
 
 import 'react-quill/dist/quill.snow.css';
 import { setOriginalPost } from 'modules/blog/writeBlog';
@@ -676,7 +677,7 @@ const PostBlock = ({ post }) => {
           </ProjectLinkRow>
         </ProjectLinkWrapper>
       )}
-      <PostBody className="ql-editor" dangerouslySetInnerHTML={{ __html: body }} />
+      <PostBody className="ql-editor" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(body) }} />
       {series !== '' && (
         <SeriesLinkWrapper>
           <BsBook />
